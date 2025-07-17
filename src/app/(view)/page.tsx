@@ -14,6 +14,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { BanIcon, EyeIcon } from "lucide-react";
+import ViewRecentUser from "./_home/view-recent-user";
+import BanUser from "./_home/ban-user";
+import ViewChallange from "./_home/view-challange";
+
 export default function Page() {
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">
@@ -66,12 +70,8 @@ const RecentUsers = () => {
                     <Badge variant={"success"}>Active</Badge>
                   </TableCell>
                   <TableCell>
-                    <Button variant={"ghost"}>
-                      <EyeIcon />
-                    </Button>
-                    <Button variant={"ghost"}>
-                      <BanIcon />
-                    </Button>
+                    <ViewRecentUser />
+                    <BanUser type="ban" />
                   </TableCell>
                 </TableRow>
               ))}
@@ -112,12 +112,8 @@ const RecentChallanges = () => {
                     <Badge variant={"success"}>Active</Badge>
                   </TableCell>
                   <TableCell>
-                    <Button variant={"ghost"}>
-                      <EyeIcon />
-                    </Button>
-                    <Button variant={"ghost"}>
-                      <BanIcon />
-                    </Button>
+                    <ViewChallange />
+                    <BanUser type="ban" />
                   </TableCell>
                 </TableRow>
               ))}

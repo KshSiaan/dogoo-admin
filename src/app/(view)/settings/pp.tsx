@@ -1,8 +1,17 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import PPUpdate from "./pp-update";
+import PassUpdate from "./pass";
 
 export default function PP() {
   return (
@@ -17,16 +26,24 @@ export default function PP() {
             <div className="flex justify-between items-center py-2">
               <Label>Profile Picture</Label>
               <div className="flex items-center gap-2">
-                <Avatar>
-                  <AvatarImage
-                    src="https://via.placeholder.com/40"
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full border"
-                  />
+                <Avatar className="">
+                  <AvatarImage src="" />
+                  <AvatarFallback>UI</AvatarFallback>
                 </Avatar>
-                <Button variant="ghost" className="font-bold text-lime-600">
-                  Change
-                </Button>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="font-bold text-lime-600">
+                      Change
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="border-b pb-2">
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <PPUpdate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 
@@ -36,9 +53,19 @@ export default function PP() {
                 <span className="text-sm font-semibold text-muted-foreground">
                   Liam Nickson
                 </span>
-                <Button variant="ghost" className="font-bold text-lime-600">
-                  Edit
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="font-bold text-lime-600">
+                      Edit
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="border-b pb-2">
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <PPUpdate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 
@@ -48,13 +75,19 @@ export default function PP() {
                 <span className="text-sm font-semibold text-muted-foreground">
                   liam.nickson@email.com
                 </span>
-                <Button
-                  variant="ghost"
-                  className="font-bold text-lime-600"
-                  disabled
-                >
-                  Edit
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="font-bold text-lime-600">
+                      Edit
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="border-b pb-2">
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <PPUpdate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 
@@ -64,9 +97,19 @@ export default function PP() {
                 <span className="text-sm font-semibold text-muted-foreground">
                   +1 555-987-6543
                 </span>
-                <Button variant="ghost" className="font-bold text-lime-600">
-                  Edit
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="font-bold text-lime-600">
+                      Edit
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="border-b pb-2">
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <PPUpdate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </section>
@@ -80,9 +123,19 @@ export default function PP() {
                 <span className="text-sm font-semibold text-muted-foreground">
                   ********
                 </span>
-                <Button variant="ghost" className="font-bold text-lime-600">
-                  Change
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="font-bold text-lime-600">
+                      Change
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="border-b pb-2">
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <PassUpdate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 
@@ -92,9 +145,19 @@ export default function PP() {
                 <span className="text-sm font-semibold text-muted-foreground">
                   Enabled
                 </span>
-                <Button variant="ghost" className="font-bold text-lime-600">
-                  Edit
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="font-bold text-lime-600">
+                      Edit
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="border-b pb-2">
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <PassUpdate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </section>

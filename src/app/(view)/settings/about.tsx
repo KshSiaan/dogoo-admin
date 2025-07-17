@@ -1,7 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import AboutModals from "./about-modals";
 
 export default function About() {
   return (
@@ -23,16 +31,38 @@ export default function About() {
 
             <div className="flex justify-between items-center py-2">
               <Label>Terms of Service</Label>
-              <Button variant="ghost" className="font-bold text-lime-600">
-                View
-              </Button>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="font-bold text-lime-600">
+                    View
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="border-b pb-2">
+                    <DialogTitle>Terms and Conditions</DialogTitle>
+                  </DialogHeader>
+                  <AboutModals type="tnc" />
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="flex justify-between items-center py-2">
               <Label>Privacy Policy</Label>
-              <Button variant="ghost" className="font-bold text-lime-600">
-                View
-              </Button>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="font-bold text-lime-600">
+                    View
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="border-b pb-2">
+                    <DialogTitle>Privacy policy</DialogTitle>
+                  </DialogHeader>
+                  <AboutModals type="privacy" />
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="flex justify-between items-center py-2">
@@ -49,9 +79,19 @@ export default function About() {
 
             <div className="flex justify-between items-center py-2">
               <Label>Licenses</Label>
-              <Button variant="ghost" className="font-bold text-lime-600">
-                View
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="font-bold text-lime-600">
+                    View
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="border-b pb-2">
+                    <DialogTitle>Software Licenses</DialogTitle>
+                  </DialogHeader>
+                  <AboutModals type="licenses" />
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="flex justify-between items-center py-2">

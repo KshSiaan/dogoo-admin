@@ -22,6 +22,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import ViewChallange from "./view-challange";
+import DeleteChallange from "./delete-challange";
 export default function Page() {
   return (
     <main className="py-6">
@@ -112,12 +114,8 @@ const Users = () => {
                 <Badge variant={"success"}>Active</Badge>
               </TableCell>
               <TableCell>
-                <Button variant={"ghost"}>
-                  <EyeIcon />
-                </Button>
-                <Button variant={"ghost"}>
-                  <BanIcon />
-                </Button>
+                <ViewChallange />
+                <DeleteChallange />
               </TableCell>
             </TableRow>
           ))}

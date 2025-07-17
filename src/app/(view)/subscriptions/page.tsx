@@ -22,6 +22,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import ViewChallange from "./view-reward";
+import DeleteChallange from "./delete-reward";
 export default function Page() {
   return (
     <main className="py-6">
@@ -81,12 +83,15 @@ export default function Page() {
 const Users = () => {
   return (
     <>
-      <Tabs defaultValue={"active"} className="mb-6">
-        <TabsList>
-          <TabsTrigger value="active">Subscription Plan</TabsTrigger>
-          <TabsTrigger value="upcoming">Subscription Transctions</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="w-full flex justify-between items-center">
+        <Tabs defaultValue={"active"} className="mb-6">
+          <TabsList>
+            <TabsTrigger value="active">Subscription Plan</TabsTrigger>
+            <TabsTrigger value="upcoming">Subscription Transctions</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Button>Add</Button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -114,15 +119,11 @@ const Users = () => {
               </TableCell>
 
               <TableCell>
-                <Button variant={"ghost"}>
-                  <EyeIcon />
-                </Button>
-                <Button variant={"ghost"}>
-                  <Trash2Icon />
-                </Button>
-                <Button variant={"ghost"}>
+                <ViewChallange />
+                <DeleteChallange />
+                {/* <Button variant={"ghost"}>
                   <CheckIcon />
-                </Button>
+                </Button> */}
               </TableCell>
             </TableRow>
           ))}
