@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { BanIcon, EyeIcon, SearchIcon } from "lucide-react";
+import { EyeIcon, SearchIcon, Trash2Icon } from "lucide-react";
 import React from "react";
 import {
   Table,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -22,13 +22,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import PP from "./pp";
+import Contact from "./contact";
+import About from "./about";
+import Guide from "./guide";
 export default function Page() {
   return (
     <main className="py-6">
       <section className="">
         <Card>
           <CardHeader className="flex items-center justify-between border-b">
-            <CardTitle>All Challenges</CardTitle>
+            <CardTitle>All Settings</CardTitle>
             <div
               className={cn(
                 "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-fit min-w-0 rounded-md border bg-transparent px-3 items-center text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
@@ -83,46 +87,24 @@ const Users = () => {
     <>
       <Tabs defaultValue={"active"} className="mb-6">
         <TabsList>
-          <TabsTrigger value="active">Active Challanges</TabsTrigger>
-          <TabsTrigger value="upcoming">Upcoming Challenges</TabsTrigger>
-          <TabsTrigger value="completed">Completed Challenges</TabsTrigger>
+          <TabsTrigger value="active">Personal Profile</TabsTrigger>
+          <TabsTrigger value="upcoming">Contact Us</TabsTrigger>
+          <TabsTrigger value="about">About Us</TabsTrigger>
+          <TabsTrigger value="upcomings">How It Works</TabsTrigger>
         </TabsList>
+        <TabsContent value="active">
+          <PP />
+        </TabsContent>
+        <TabsContent value="upcoming">
+          <Contact />
+        </TabsContent>
+        <TabsContent value="about">
+          <About />
+        </TabsContent>
+        <TabsContent value="upcomings">
+          <Guide />
+        </TabsContent>
       </Tabs>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>CHALLENGE NAME</TableHead>
-            <TableHead>TYPE</TableHead>
-            <TableHead>START DATE</TableHead>
-            <TableHead>END DATE</TableHead>
-            <TableHead>PARTICIPANTS</TableHead>
-            <TableHead>ACTION</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>{i + 1001}</TableCell>
-              <TableCell>Liam Nickson</TableCell>
-              <TableCell>Health</TableCell>
-              <TableCell>12 June 2025</TableCell>
-              <TableCell>12 June 2025</TableCell>
-              <TableCell>
-                <Badge variant={"success"}>Active</Badge>
-              </TableCell>
-              <TableCell>
-                <Button variant={"ghost"}>
-                  <EyeIcon />
-                </Button>
-                <Button variant={"ghost"}>
-                  <BanIcon />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </>
   );
 };
