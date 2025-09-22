@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import TanstackProvider from "@/provider/query-provider";
+import { Toaster } from "sonner";
 
 const montserrat = Montserrat({
   variable: "--font-geist-sans",
@@ -26,7 +28,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TanstackProvider>
+            {children}
+            <Toaster />
+          </TanstackProvider>
         </ThemeProvider>
       </body>
     </html>

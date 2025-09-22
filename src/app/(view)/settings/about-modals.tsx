@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 
-export default function HiwModals({
+export default function AboutModals({
   type,
 }: {
   type: "tnc" | "privacy" | "licenses";

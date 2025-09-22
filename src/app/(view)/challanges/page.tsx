@@ -1,19 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { BanIcon, EyeIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -22,8 +13,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import ViewChallange from "./view-challange";
-import DeleteChallange from "./delete-challange";
+import Active from "./active";
+import ChallangeTypes from "./challange-types";
+import Completed from "./completed";
+
 export default function Page() {
   return (
     <main className="py-6">
@@ -83,44 +76,22 @@ export default function Page() {
 const Users = () => {
   return (
     <>
-      <Tabs defaultValue={"active"} className="mb-6">
+      <Tabs defaultValue={"challangeTypes"} className="mb-6">
         <TabsList>
+          <TabsTrigger value="challangeTypes">Challenge Types</TabsTrigger>
           <TabsTrigger value="active">Active Challanges</TabsTrigger>
-          <TabsTrigger value="upcoming">Upcoming Challenges</TabsTrigger>
           <TabsTrigger value="completed">Completed Challenges</TabsTrigger>
         </TabsList>
+        <TabsContent value="challangeTypes">
+          <ChallangeTypes />
+        </TabsContent>
+        <TabsContent value="active">
+          <Active />
+        </TabsContent>
+        <TabsContent value="completed">
+          <Completed />
+        </TabsContent>
       </Tabs>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>CHALLENGE NAME</TableHead>
-            <TableHead>TYPE</TableHead>
-            <TableHead>START DATE</TableHead>
-            <TableHead>END DATE</TableHead>
-            <TableHead>PARTICIPANTS</TableHead>
-            <TableHead>ACTION</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>{i + 1001}</TableCell>
-              <TableCell>Liam Nickson</TableCell>
-              <TableCell>Health</TableCell>
-              <TableCell>12 June 2025</TableCell>
-              <TableCell>12 June 2025</TableCell>
-              <TableCell>
-                <Badge variant={"success"}>Active</Badge>
-              </TableCell>
-              <TableCell>
-                <ViewChallange />
-                <DeleteChallange />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </>
   );
 };

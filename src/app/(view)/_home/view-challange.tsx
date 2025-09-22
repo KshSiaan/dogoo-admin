@@ -36,7 +36,7 @@ export default function ViewChallange() {
               <div className="">
                 <p className="font-semibold">Description:</p>
                 <p className="text-muted-foreground">
-                  Complete daily fitness activities for 30 days to improve your
+                  Complete daily fitness activities for 30 days to improve  
                   health and wellness.
                 </p>
               </div>

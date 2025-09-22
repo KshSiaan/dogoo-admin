@@ -3,17 +3,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { EyeIcon, SearchIcon, Trash2Icon } from "lucide-react";
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -22,8 +13,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import ViewChallange from "./view-reward";
-import DeleteChallange from "./delete-reward";
+
+import Available from "./available";
 export default function Page() {
   return (
     <main className="py-6">
@@ -83,46 +74,15 @@ export default function Page() {
 const Users = () => {
   return (
     <>
-      <Tabs defaultValue={"active"} className="mb-6">
+      <Tabs defaultValue={"available"} className="mb-6">
         <TabsList>
-          <TabsTrigger value="active">Available Rewards</TabsTrigger>
-          <TabsTrigger value="upcoming">Partner Business</TabsTrigger>
+          <TabsTrigger value="available">Available Rewards</TabsTrigger>
+          <TabsTrigger value="partner">Partner Business</TabsTrigger>
         </TabsList>
+        <TabsContent value="available">
+          <Available />
+        </TabsContent>
       </Tabs>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>REWARD NAME</TableHead>
-            <TableHead>TYPE</TableHead>
-            <TableHead>POINT REQUIRED</TableHead>
-            <TableHead>PARTNER</TableHead>
-            <TableHead>AVAILABILITY</TableHead>
-            <TableHead>REDEMPTIONS</TableHead>
-            <TableHead>ACTION</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>{i + 1001}</TableCell>
-              <TableCell>$10 Amazon Gift Card</TableCell>
-              <TableCell>Digital</TableCell>
-              <TableCell>1000</TableCell>
-              <TableCell>Amazon</TableCell>
-
-              <TableCell>
-                <Badge variant={"success"}>Active</Badge>
-              </TableCell>
-              <TableCell>245</TableCell>
-              <TableCell>
-                <ViewChallange />
-                <DeleteChallange />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </>
   );
 };

@@ -1,41 +1,71 @@
-import { Button } from "@/components/ui/button";
+"use client";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { BanIcon } from "lucide-react";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Trash2Icon } from "lucide-react";
 import React from "react";
+import { idk } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTypeApi } from "@/lib/api/admin";
+import { toast } from "sonner";
+import { useCookies } from "react-cookie";
 
-export default function DeleteChallange() {
+export default function DeleteChallange({ data }: { data: idk }) {
+  const [{ token }] = useCookies(["token"]);
+  const qcl = useQueryClient();
+  const { mutate } = useMutation({
+    mutationKey: ["delete_challange_type"],
+    mutationFn: () => {
+      return deleteTypeApi({ type_id: data?.id, token });
+    },
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to complete this request");
+    },
+    onSuccess: (res: idk) => {
+      qcl.invalidateQueries({ queryKey: ["type_ch"] });
+      toast.success(
+        res.message ?? `Successfully deleted ${data.challenge_type}`
+      );
+    },
+  });
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant={"ghost"}>
-          <BanIcon />
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost">
+          <Trash2Icon className="text-destructive" />
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="border-b px-0! pb-2">
-          <DialogTitle>Delete Challenge</DialogTitle>
-        </DialogHeader>
-        <p className="py-4 text-sm">
-          Are you sure you want to delete the &quot;30-Day Fitness
-          Challenge&quot; challenge?
-        </p>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button>Confirm</Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Challenge</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete the &quot;{data.challenge_type}
+            &quot; challenge? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                mutate();
+              }}
+            >
+              Confirm
+            </Button>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

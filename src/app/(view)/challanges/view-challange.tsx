@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,10 +7,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { idk } from "@/lib/utils";
 import { EyeIcon } from "lucide-react";
 import React from "react";
 
-export default function ViewChallange() {
+export default function ViewChallange({ data }: { data: idk }) {
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Date(dateStr).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -19,7 +33,7 @@ export default function ViewChallange() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="pb-2 border-b">
-          <DialogTitle>Challenges Details</DialogTitle>
+          <DialogTitle>Challenge Details</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-6 text-sm items-start">
           {/* Left Column */}
@@ -28,25 +42,16 @@ export default function ViewChallange() {
 
             <div className="space-y-1.5">
               <div className="flex space-x-2">
-                <p className="font-semibold">Name:</p>
-                <p className="text-muted-foreground">
-                  30-Day Fitness Challenge
-                </p>
-              </div>
-              <div className="">
-                <p className="font-semibold">Description:</p>
-                <p className="text-muted-foreground">
-                  Complete daily fitness activities for 30 days to improve
-                  health and wellness.
-                </p>
+                <p className="font-semibold">Group Name:</p>
+                <p className="text-muted-foreground">{data.group_name}</p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Type:</p>
-                <p className="text-muted-foreground">Health</p>
+                <p className="text-muted-foreground">{data.challenge_type}</p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Duration:</p>
-                <p className="text-muted-foreground">30 days</p>
+                <p className="text-muted-foreground">{data.duration} days</p>
               </div>
             </div>
           </div>
@@ -58,16 +63,26 @@ export default function ViewChallange() {
             <div className="space-y-1.5">
               <div className="flex space-x-2">
                 <p className="font-semibold">Starting Date:</p>
-                <p className="text-muted-foreground">12 June 2025</p>
+                <p className="text-muted-foreground">
+                  {formatDate(data.start_date)}
+                </p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Ending Date:</p>
-                <p className="text-muted-foreground">20 June 2025</p>
+                <p className="text-muted-foreground">
+                  {formatDate(data.end_date)}
+                </p>
               </div>
               <div className="flex space-x-2 items-center">
                 <p className="font-semibold">Status:</p>
-                <span className="text-xs bg-green-100 text-green-700 font-medium px-2 py-0.5 rounded">
-                  Active
+                <span
+                  className={`text-xs font-medium px-2 py-0.5 rounded ${
+                    data.status === "Active"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {data.status}
                 </span>
               </div>
             </div>
@@ -80,37 +95,31 @@ export default function ViewChallange() {
             <div className="space-y-1.5">
               <div className="flex space-x-2">
                 <p className="font-semibold">Participants:</p>
-                <p className="text-muted-foreground">245</p>
+                <p className="text-muted-foreground">{data.members_count}</p>
               </div>
               <div className="flex space-x-2">
-                <p className="font-semibold">Completion Rate:</p>
-                <p className="text-muted-foreground">72%</p>
-              </div>
-              <div className="flex space-x-2">
-                <p className="font-semibold">Reward Points:</p>
-                <p className="text-muted-foreground">500</p>
+                <p className="font-semibold">Max Capacity:</p>
+                <p className="text-muted-foreground">{data.max_count}</p>
               </div>
             </div>
           </div>
 
-          {/* Second Row, Right Column - Tasks */}
+          {/* Second Row, Right Column - Info */}
           <div>
-            <h4 className="mb-2 text-base font-semibold">Tasks</h4>
+            <h4 className="mb-2 text-base font-semibold">Meta</h4>
 
             <div className="space-y-1.5">
               <div className="flex space-x-2">
-                <p className="text-muted-foreground">30 minutes of exercise</p>
-              </div>
-              <div className="flex space-x-2">
-                <p className="text-muted-foreground">10,000 steps</p>
-              </div>
-              <div className="flex space-x-2">
+                <p className="font-semibold">Created At:</p>
                 <p className="text-muted-foreground">
-                  Drink 8 glasses of water
+                  {formatDate(data.created_at)}
                 </p>
               </div>
               <div className="flex space-x-2">
-                <p className="text-muted-foreground">No junk food</p>
+                <p className="font-semibold">Updated At:</p>
+                <p className="text-muted-foreground">
+                  {formatDate(data.updated_at)}
+                </p>
               </div>
             </div>
           </div>

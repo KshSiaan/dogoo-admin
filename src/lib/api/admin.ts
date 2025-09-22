@@ -1,0 +1,166 @@
+
+
+// >>>>>>>>>>>>> USER <<<<<<<<<<<<<<<
+
+import { howl } from "../utils";
+
+export const getUsersApi = async ({
+  search,
+  token,
+}: { search?: string; token?: string }) => {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  return howl(`/admin/get-users${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const viewUserApi = async ({
+  user_id,
+  token,
+}: { user_id: string | number; token?: string }) => {
+  const query = `?user_id=${encodeURIComponent(user_id)}`;
+  return howl(`/admin/view-user${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getBasicInfoApi = async ({
+  user_id,
+  token,
+}: { user_id: string | number; token?: string }) => {
+  const query = `?user_id=${encodeURIComponent(user_id)}`;
+  return howl(`/admin/basic-info${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getTransactionsApi = async ({
+  user_id,
+  per_page,
+  token,
+}: { user_id: string | number; per_page?: number; token?: string }) => {
+  return howl(`/admin/get-transations?user_id=${user_id}&per_page=${per_page}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+export const blockUnblockUserApi = async ({
+  token,
+  id,
+}: {
+  id:string;
+  token?: string;
+}) => {
+  return howl(`/admin/block-unblock-user?user_id=${id}`, {
+    method: "PATCH",
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+  });
+};
+
+// >>>>>>>>>>>>>>>>> CHALLENGE MANAGEMENT <<<<<<<<<<<<<<<<<<<<
+
+export const getActiveChallengesApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/get-active-challenges", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+export const getCompletedChallengesApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/get-completed-challenges", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const viewActiveChallengeApi = async ({
+  challenge_id,
+  token,
+}: { challenge_id: string | number; token?: string }) => {
+  return howl(`/admin/view-active-challenge/${challenge_id}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const viewCompletedChallengeApi = async ({
+  challenge_id,
+  token,
+}: { challenge_id: string | number; token?: string }) => {
+  return howl(`/admin/view-completed-challenge/${challenge_id}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getTypesApi = async ({
+  search,
+  token,
+}: { search?: string; token?: string }) => {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  return howl(`/admin/get-types${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const viewTypeApi = async ({
+  type_id,
+  token,
+}: { type_id: string | number; token?: string }) => {
+  return howl(`/admin/view-type/${type_id}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const addTypeApi = async ({
+  body,
+  token,
+}: {
+  body: { challenge_type: string; note?: string };
+  token?: string;
+}) => {
+  return howl("/admin/add-type", {
+    method: "POST",
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    body,
+  });
+};
+
+export const editTypeApi = async ({
+  type_id,
+  body,
+  token,
+}: {
+  type_id: string | number;
+  body: { challenge_type: string; note?: string; _method?: "PATCH" };
+  token?: string;
+}) => {
+  return howl(`/admin/edit-type/${type_id}`, {
+    method: "POST", // backend expects POST + _method override
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    body: {
+      ...body,
+      _method: "PATCH", // ensure PATCH override is always set
+    },
+  });
+};
+
+export const deleteTypeApi = async ({
+  type_id,
+  token,
+}: { type_id: string | number; token?: string }) => {
+  return howl(`/admin/delete-type/${type_id}`, {
+    method: "DELETE",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};

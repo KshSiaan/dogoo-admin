@@ -13,12 +13,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { BanIcon, EyeIcon } from "lucide-react";
 import ViewRecentUser from "./_home/view-recent-user";
 import BanUser from "./_home/ban-user";
 import ViewChallange from "./_home/view-challange";
+import { cookies } from "next/headers";
 
-export default function Page() {
+export default async function Page() {
+  const token = (await cookies()).get("token")?.value;
+  if (!token) {
+    return null;
+  }
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">

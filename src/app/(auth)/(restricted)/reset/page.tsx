@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import React from "react";
 
 import {
@@ -26,55 +27,38 @@ import {
 } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { changePasswordApi } from "@/lib/api/auth";
-import { useCookies } from "react-cookie";
-import { useRouter } from "next/navigation";
+import { forgotPassApi } from "@/lib/api/auth";
 import { idk } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-const formSchema = z
-  .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    password_confirmation: z
-      .string()
-      .min(6, "Password confirmation is required"),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords do not match",
-    path: ["password_confirmation"],
-  });
+const formSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+});
 
 export default function Page() {
-  const router = useRouter();
-  const [{ token }] = useCookies(["token"]);
+  const navig = useRouter();
   const { mutate } = useMutation({
-    mutationKey: ["change-password"],
-    mutationFn: (dataset: {
-      password: string;
-      password_confirmation: string;
-    }) =>
-      changePasswordApi({
-        body: dataset,
-        token,
-      }),
+    mutationKey: ["forgot-password"],
+    mutationFn: (dataset: { email: string }) =>
+      forgotPassApi({ body: dataset }),
     onError: (err) => {
-      toast.error(err.message ?? "Failed to reset password");
+      toast.error(err.message ?? "Failed to send verification code");
     },
     onSuccess: (res: idk) => {
-      toast.success(res.message ?? "Password successfully changed!");
-      router.push("/");
+      toast.success(res.message ?? "Verification code sent!");
+      navig.push("/verify-otp");
     },
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      password: "",
-      password_confirmation: "",
+      email: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Submitted new password:", values);
+    console.log("Submitted email:", values);
     mutate(values);
   }
 
@@ -82,14 +66,14 @@ export default function Page() {
     <Card className="w-[40dvw] h-auto">
       <CardHeader>
         <CardTitle className="text-5xl font-bold flex items-center gap-3 w-full justify-center">
-          <span>New</span>{" "}
+          <span>Reset</span>{" "}
           <span className="relative text-[#D6DF22]">
             Password
             <div className="w-full absolute -bottom-2 left-0 h-2 bg-gradient-to-r from-[#D6DF20] to-[#FFFFFF]" />
           </span>
         </CardTitle>
         <CardDescription className="text-center text-xl">
-          Secure access to your administration dashboard
+          We&apos;ll send a verification code to your email
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -97,33 +81,12 @@ export default function Page() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="password"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter new password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password_confirmation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm new password"
-                      {...field}
-                    />
+                    <Input placeholder="Enter your email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,7 +94,10 @@ export default function Page() {
             />
             <CardFooter className="flex-col gap-4 px-0">
               <Button className="w-full" type="submit">
-                Reset Password
+                Send Verification Code
+              </Button>
+              <Button className="w-fit mx-auto" variant="link" asChild>
+                <Link href={"/login"}>Back to Login</Link>
               </Button>
             </CardFooter>
           </form>
