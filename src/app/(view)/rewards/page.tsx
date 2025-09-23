@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/pagination";
 
 import Available from "./available";
+import Partners from "./partners";
 export default function Page() {
   return (
     <main className="py-6">
@@ -81,6 +82,9 @@ const Users = () => {
         </TabsList>
         <TabsContent value="available">
           <Available />
+        </TabsContent>
+        <TabsContent value="partner">
+          <Partners />
         </TabsContent>
       </Tabs>
     </>

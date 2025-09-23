@@ -8,27 +8,27 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { cancelRewardApi } from "@/lib/api/admin";
+import { blockUnblockPartnerApi } from "@/lib/api/admin";
 import { idk } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TrashIcon } from "lucide-react";
+import { BanIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 
-export default function DeleteChallange({ data }: { data: idk }) {
+export default function PartnerBan({ data }: { data: idk }) {
   const [{ token }] = useCookies(["token"]);
   const [open, setOpen] = useState(false);
   const qcl = useQueryClient();
   const { mutate } = useMutation({
-    mutationKey: ["delete_reward"],
-    mutationFn: () => cancelRewardApi({ reward_id: data.id, token }),
+    mutationKey: ["ban_unban_partner"],
+    mutationFn: () => blockUnblockPartnerApi({ user_id: data.id, token }),
     onError: (err) => {
       toast.error(err.message ?? "Failed to complete this request");
     },
     onSuccess: (res: idk) => {
       qcl.invalidateQueries({
-        queryKey: ["reward"],
+        queryKey: ["partners"],
       });
       toast.success(res.message ?? "Successfully marked as Cancel!");
       setOpen(false);
@@ -42,16 +42,20 @@ export default function DeleteChallange({ data }: { data: idk }) {
         className="text-destructive"
         onClick={() => setOpen(true)}
       >
-        <TrashIcon />
+        <BanIcon />
       </Button>
 
       <DialogContent>
         <DialogHeader className="border-b px-0! pb-2">
-          <DialogTitle>Delete the &quot;{data.title}&quot;</DialogTitle>
+          <DialogTitle>
+            {data.status === "Blocked" ? "Unban" : "Ban"} &quot;{data.full_name}
+            &quot;??
+          </DialogTitle>
         </DialogHeader>
 
         <p className="py-4 text-sm">
-          Are you sure you want to delete the &quot;10 Amazon Gift Card&quot;?
+          Are you sure you want to {data.status === "Blocked" ? "unban" : "ban"}{" "}
+          &quot;{data.full_name}&quot;?
         </p>
 
         <DialogFooter>

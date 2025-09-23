@@ -17,13 +17,8 @@ import { idk } from "@/lib/utils";
 
 import { getTypesApi } from "@/lib/api/admin";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
+import AddChal from "./add-chal";
 
 export default function ChallangeTypes() {
   const [{ token }] = useCookies(["token"]);
@@ -36,16 +31,7 @@ export default function ChallangeTypes() {
   return (
     <>
       <div className="flex justify-end items-center mb-6">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>Add Challange Type</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle></DialogTitle>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        <AddChal />
       </div>
       <Table>
         <TableHeader>

@@ -164,3 +164,85 @@ export const deleteTypeApi = async ({
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
+
+
+// >>>>>>>>>>>>>>>>> REWARDS <<<<<<<<<<<<<<<<<<<<
+
+export const getRewardsApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/get-rewards", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const viewRewardApi = async ({
+  reward_id,
+  token,
+}: { reward_id: string | number; token?: string }) => {
+  return howl(`/admin/view-reward/${reward_id}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const approveRewardApi = async ({
+  reward_id,
+  token,
+}: { reward_id: string | number; token?: string }) => {
+  return howl(`/admin/approved-reward?reward_id=${encodeURIComponent(reward_id)}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const cancelRewardApi = async ({
+  reward_id,
+  token,
+}: { reward_id: string | number; token?: string }) => {
+  return howl(`/admin/canceled-reward?reward_id=${encodeURIComponent(reward_id)}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+
+// >>>>>>>>>>>>>>>>> PARTNERS <<<<<<<<<<<<<<<<<<<<
+
+export const getPartnersApi = async ({
+  search,
+  per_page,
+  page,
+  token,
+}: { search?: string; per_page?: number; page?: number; token?: string }) => {
+  const query = `?${[
+    search ? `search=${encodeURIComponent(search)}` : null,
+    per_page ? `per_page=${per_page}` : null,
+    page ? `page=${page}` : null,
+  ]
+    .filter(Boolean)
+    .join("&")}`;
+  return howl(`/admin/get-partners${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const viewPartnerUserApi = async ({
+  user_id,
+  token,
+}: { user_id: string | number; token?: string }) => {
+  return howl(`/admin/view-user?user_id=${encodeURIComponent(user_id)}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const blockUnblockPartnerApi = async ({
+  user_id,
+  token,
+}: { user_id: string | number; token?: string }) => {
+  return howl(`/admin/block-unblock-user?user_id=${encodeURIComponent(user_id)}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
