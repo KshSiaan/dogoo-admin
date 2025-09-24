@@ -2,7 +2,7 @@
 
 // >>>>>>>>>>>>> USER <<<<<<<<<<<<<<<
 
-import { howl } from "../utils";
+import { howl, idk } from "../utils";
 
 export const getUsersApi = async ({
   search,
@@ -244,5 +244,54 @@ export const blockUnblockPartnerApi = async ({
   return howl(`/admin/block-unblock-user?user_id=${encodeURIComponent(user_id)}`, {
     method: "PATCH",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+
+// >>>>>>>>>>>>>>>>> SUBSCRIPTIONS <<<<<<<<<<<<<<<<<<<<
+
+export const getSubscriptionsApi = async ({
+  search,
+  token,
+}: { search?: string; token?: string }) => {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  return howl(`/admin/get-subscriptions${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+
+// >>>>>>>>>>>>>>>>> TRANSACTION <<<<<<<<<<<<<<<<<<<<
+
+
+export const getTransactionsAdminApi = async ({
+  token,
+}: { token?: string }) => {
+  return howl(`/admin/get-transations`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+// >>>>>>>>>>>>>>>>> CONTENTS <<<<<<<<<<<<<<<<<<<<
+
+export const getPrivacyApi = async ({
+  token,
+}: { token?: string }) => {
+  return howl(`/pages/data-privacy`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const updatePrivacyApi = async ({
+  token,
+  body
+}: { token?: string ,body:{title:string, content:idk}}) => {
+  return howl(`/pages/data-privacy`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body
   });
 };

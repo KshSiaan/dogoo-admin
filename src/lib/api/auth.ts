@@ -1,4 +1,5 @@
 import { howl } from "@/lib/utils"
+import { apiConfig, base_server } from "../config";
 
 // >>>>>>>>>>>>>>>>> AUTH <<<<<<<<<<<<<<<<<<<<
 
@@ -78,4 +79,26 @@ export const getProfileApi = async (token: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+
+export const updateProfileApi = async ({
+  body,
+  token,
+}: {
+  token: string;
+  body: FormData;
+}) => {
+  const res = await fetch(`${apiConfig.baseUrl}/edit-profile`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body,
+  });
+  
+  if (!res.ok) {
+    throw new Error(`Failed to update profile: ${res.statusText}`);
+  }
+  return res.json();
 };

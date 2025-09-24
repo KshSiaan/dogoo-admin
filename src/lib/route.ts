@@ -1,5 +1,6 @@
 import { IconUsers } from "@tabler/icons-react";
 import {
+  BadgeDollarSignIcon,
   BellIcon,
   ChartAreaIcon,
   ClockArrowDownIcon,
@@ -42,20 +43,20 @@ export const route = {
       icon: ClockArrowDownIcon,
     },
     {
-      title: "Analytics & Reports",
-      url: "/analytics",
-      icon: ChartAreaIcon,
+      title: "Transaction Management",
+      url: "/transaction",
+      icon: BadgeDollarSignIcon,
     },
+    // {
+    //   title: "Analytics & Reports",
+    //   url: "/analytics",
+    //   icon: ChartAreaIcon,
+    // },
 
     {
       title: "Notifications",
       url: "/notifications",
       icon: BellIcon,
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: SlidersHorizontalIcon,
     },
   ],
 };

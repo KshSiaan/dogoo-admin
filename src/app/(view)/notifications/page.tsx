@@ -1,15 +1,9 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { SearchIcon } from "lucide-react";
 import React from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -18,6 +12,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import All from "./all";
 export default function Page() {
   return (
     <main className="py-6">
@@ -83,28 +78,10 @@ const Users = () => {
           <TabsTrigger value="upcoming">Read</TabsTrigger>
           <TabsTrigger value="completed">Unread</TabsTrigger>
         </TabsList>
+        <TabsContent value="active">
+          <All />
+        </TabsContent>
       </Tabs>
-      <div className="space-y-6">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Card key={i}>
-            <CardHeader className="w-full flex justify-between items-center">
-              <CardTitle className="text-sm">
-                New Challenge: 30-Day Fitness Blast is Live!
-              </CardTitle>
-              <p className="text-xs">10m ago</p>
-            </CardHeader>
-            <CardContent className="flex justify-between items-end">
-              <CardDescription>
-                Admin just added a new challenge for all users. Start your
-                journey today!
-              </CardDescription>
-              <div className="">
-                <div className="size-2.5 rounded-full bg-blue-400"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
     </>
   );
 };

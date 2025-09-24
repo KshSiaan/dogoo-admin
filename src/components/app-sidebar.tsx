@@ -17,6 +17,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Separator } from "./ui/separator";
 import { route } from "@/lib/route";
+
 const data = route;
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
