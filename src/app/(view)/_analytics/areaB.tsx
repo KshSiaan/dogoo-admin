@@ -13,45 +13,59 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const chartData = [
-  { month: "Jan", activeUser: 37, blockedUser: 8 },
-  { month: "Feb", activeUser: 39, blockedUser: 10 },
-  { month: "Mar", activeUser: 38, blockedUser: 9 },
-  { month: "Apr", activeUser: 40, blockedUser: 10 },
-  { month: "May", activeUser: 38, blockedUser: 9 },
-  { month: "Jun", activeUser: 37, blockedUser: 9 },
-  { month: "Jul", activeUser: 39, blockedUser: 10 },
-  { month: "Aug", activeUser: 38, blockedUser: 9 },
-  { month: "Sep", activeUser: 37, blockedUser: 9 },
-  { month: "Oct", activeUser: 38, blockedUser: 10 },
-  { month: "Nov", activeUser: 37, blockedUser: 9 },
-  { month: "Dec", activeUser: 38, blockedUser: 10 },
-];
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { getRevenueChartApi } from "@/lib/api/admin";
+import { useCookies } from "react-cookie";
+import { Skeleton } from "@/components/ui/skeleton";
+import { idk } from "@/lib/utils";
 
 const chartConfig = {
-  activeUser: {
-    label: "New User",
+  total_transactions: {
+    label: "Transactions",
     color: "#14b8a6",
   },
-  blockedUser: {
-    label: "Active User",
+  total_amount: {
+    label: "Revenue Amount",
     color: "#f87171",
   },
 };
 
-export default function ChartB() {
+export default function ChartBC() {
+  const [{ token }] = useCookies(["token"]);
+  const { data, isPending } = useQuery({
+    queryKey: ["revenue_chart"],
+    queryFn: (): idk => getRevenueChartApi({ token }),
+  });
+
+  // transform API data
+  const chartData =
+    data?.data?.map((item: idk) => ({
+      month: item.month,
+      total_transactions: Number(item.total_transactions),
+      // remove the "k" suffix safely & parse to number
+      total_amount: parseFloat((item.total_amount as string).replace(/k$/, "")),
+    })) || [];
+
+  if (isPending) {
+    return <Skeleton className="w-full aspect-video" />;
+  }
+
   return (
-    <div className="w-full p-4 mt-12">
-      <div className="mb-6">
+    <Card className="w-full">
+      <CardHeader className="flex justify-between items-center">
+        <CardTitle className="text-xl">Revenue Overview</CardTitle>
+      </CardHeader>
+
+      <div className="my-6">
         <div className="flex justify-center items-center gap-6 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-12 h-2 bg-[#14b8a6] rounded"></div>
-            <span>New User</span>
+            <span>Transactions</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-12 h-2 bg-[#f87171] rounded"></div>
-            <span>Active User</span>
+            <span>Revenue Amount</span>
           </div>
         </div>
       </div>
@@ -73,8 +87,6 @@ export default function ChartB() {
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#666" }}
-              domain={[0, 45]}
-              ticks={[0, 10, 20, 30, 40]}
             />
             <ChartTooltip
               content={<ChartTooltipContent />}
@@ -82,7 +94,7 @@ export default function ChartB() {
             />
             <Area
               type="monotone"
-              dataKey="activeUser"
+              dataKey="total_transactions"
               stroke="#14b8a6"
               fill="rgba(20, 184, 166, 0.2)"
               strokeWidth={2}
@@ -90,7 +102,7 @@ export default function ChartB() {
             />
             <Area
               type="monotone"
-              dataKey="blockedUser"
+              dataKey="total_amount"
               stroke="#f87171"
               fill="rgba(248, 113, 113, 0.2)"
               strokeWidth={2}
@@ -99,6 +111,6 @@ export default function ChartB() {
           </AreaChart>
         </ResponsiveContainer>
       </ChartContainer>
-    </div>
+    </Card>
   );
 }

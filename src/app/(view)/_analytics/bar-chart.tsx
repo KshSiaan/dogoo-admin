@@ -21,53 +21,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-const chartData = [
-  { month: "30- Day Fitness", activeUser: 12, blockedUser: 8 },
-  { month: "Morning Routine", activeUser: 39, blockedUser: 10 },
-  { month: "No Sugar", activeUser: 28, blockedUser: 9 },
-  { month: "Reading", activeUser: 4, blockedUser: 10 },
-  { month: "Meditation", activeUser: 32, blockedUser: 9 },
-];
+import { Card, CardHeader } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { getTopChallengeChartApi } from "@/lib/api/admin";
+import { useCookies } from "react-cookie";
+import { useState } from "react";
+import { idk } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const chartConfig = {
   activeUser: {
-    label: "Active User",
+    label: "Completed Count",
     color: "#14b8a6",
-  },
-  blockedUser: {
-    label: "Blocked User",
-    color: "#f87171",
   },
 };
 
 export default function ChartC() {
+  const [{ token }] = useCookies(["token"]);
+  const [filter, setFilter] = useState<idk>("30");
+
+  const { data, isPending } = useQuery({
+    queryKey: ["top_challenges", filter],
+    queryFn: (): idk => getTopChallengeChartApi({ filter, token }),
+  });
+
+  // transform API response
+  const chartData =
+    data?.data?.data?.map((item: idk) => ({
+      month: item.habit_name,
+      activeUser: item.completed_count,
+    })) || [];
+  if (isPending) {
+    <Skeleton className="w-full aspect-video" />;
+  }
   return (
-    <div className="w-full p-4 mt-6">
-      <div className="mb-6">
+    <Card className="w-full">
+      <CardHeader className="mb-6">
         <div className="flex items-center justify-between w-full">
           <h3 className="text-xl font-semibold">Top Challenges</h3>
-          <Select>
+          <Select
+            value={filter}
+            onValueChange={(e) => {
+              setFilter(e);
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Last 30 Days" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1">Last 7 Days</SelectItem>
-              <SelectItem value="2">Last 30 Days</SelectItem>
+              <SelectItem value="7">Last 7 Days</SelectItem>
+              <SelectItem value="15">Last 15 Days</SelectItem>
+              <SelectItem value="30">Last 30 Days</SelectItem>
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </CardHeader>
 
       <ChartContainer config={chartConfig} className="max-h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             barCategoryGap="20%"
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -81,19 +95,16 @@ export default function ChartC() {
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#666" }}
-              domain={[0, 45]}
-              ticks={[0, 10, 20, 30, 40]}
             />
             <ChartTooltip
               content={<ChartTooltipContent />}
               cursor={{ fill: "rgba(0, 0, 0, 0.1)" }}
             />
             <Bar dataKey="activeUser" radius={[2, 2, 0, 0]} maxBarSize={40}>
-              {chartData.map((entry, index) => (
+              {chartData.map((entry: idk, index: number) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={
-                    // you can define logic here, or use a color list
                     index === 0
                       ? "#2A9D90"
                       : index === 1
@@ -107,16 +118,9 @@ export default function ChartC() {
                 />
               ))}
             </Bar>
-
-            {/* <Bar
-              dataKey="blockedUser"
-              fill="var(--color-blockedUser)"
-              radius={[2, 2, 0, 0]}
-              maxBarSize={40}
-            /> */}
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>
-    </div>
+    </Card>
   );
 }

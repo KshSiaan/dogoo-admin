@@ -16,9 +16,11 @@ import { getPrivacyApi, updatePrivacyApi } from "@/lib/api/admin";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 export default function Page() {
   const [{ token }] = useCookies(["token"]);
+  const [title, setTitle] = useState<string>("");
   const [privacy, setPrivacy] = useState<idk>();
   const { data, isPending } = useQuery({
     queryKey: ["privacy"],
@@ -26,7 +28,7 @@ export default function Page() {
       return getPrivacyApi({ token });
     },
   });
-  const { mutate } = useMutation({
+  const { mutate, isPending: saving } = useMutation({
     mutationKey: ["update_privacy"],
     mutationFn: (body: { title: string; content: idk }) => {
       return updatePrivacyApi({ token, body });
@@ -42,16 +44,24 @@ export default function Page() {
   useEffect(() => {
     if (!isPending) {
       setPrivacy(data.data.content);
+      setTitle(data.data.title);
     }
   }, [isPending]);
-  //TODO: NEED TO ADD TITLE AND NEED TO INTEGRATE API
+
   return (
     <main className="py-6 h-full">
       <Card className="h-full">
         <CardHeader className="border-b">
           <CardTitle>Data Privacy</CardTitle>
         </CardHeader>
-        <CardContent className="">
+        <CardContent className="space-y-4">
+          <Input
+            placeholder="Title"
+            value={title}
+            onChange={(x) => {
+              setTitle(x.target.value);
+            }}
+          />
           <Editor
             className=""
             style={{ minHeight: "300px" }}
@@ -60,7 +70,19 @@ export default function Page() {
           />
         </CardContent>
         <CardFooter className="flex w-full justify-end">
-          <Button>Update</Button>
+          <Button
+            disabled={saving}
+            onClick={() => {
+              if (title && privacy) {
+                mutate({
+                  title,
+                  content: privacy,
+                });
+              }
+            }}
+          >
+            {saving ? "Updating" : "Update"}
+          </Button>
         </CardFooter>
       </Card>
     </main>

@@ -1,6 +1,9 @@
 "use client";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+
 import {
   Table,
   TableBody,
@@ -10,52 +13,71 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-
-import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
-import { getUsersApi } from "@/lib/api/admin";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
 import { cn, idk } from "@/lib/utils";
-import { SearchIcon } from "lucide-react";
+import { getUsersApi } from "@/lib/api/admin";
 import { dateExtractor } from "@/lib/functions";
 import DetailsButton from "./details-button";
-
 import UserBlocker from "./user-blocker";
 
 export default function Users() {
   const [{ token }] = useCookies(["token"]);
   const [search, setSearch] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["users", search],
-    queryFn: (): idk => getUsersApi({ search, token }),
+    queryKey: ["users", search, page],
+    queryFn: (): idk => getUsersApi({ search, token, page }),
   });
+
+  const users = data?.data?.data || [];
+  const pagination = data?.data;
+
   return (
     <Card className="h-full overflow-y-auto">
       <CardHeader className="flex items-center justify-between border-b">
         <CardTitle>All Users</CardTitle>
         <div
           className={cn(
-            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-fit min-w-0 rounded-md border bg-transparent px-3 items-center text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-            "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-            "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+            "flex h-9 w-fit items-center rounded-md border px-3",
+            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground",
+            "shadow-xs transition-[color,box-shadow] outline-none md:text-sm"
           )}
         >
-          <SearchIcon className="text-muted-foreground" />
+          <SearchIcon className="text-muted-foreground mr-2" />
           <Input
             className="outline-none! border-none! ring-0! shadow-none! py-0"
             placeholder="Search.."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
+              setPage(1); // reset to page 1 on search
             }}
           />
         </div>
       </CardHeader>
+
       <CardContent>
         {isLoading ? (
-          <div className={`flex justify-center items-center h-24 mx-auto`}>
-            <Loader2Icon className={`animate-spin`} />
+          <div className="flex justify-center items-center h-24">
+            <Loader2Icon className="animate-spin" />
           </div>
         ) : (
           <Table>
@@ -70,58 +92,100 @@ export default function Users() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.data.data.map(
-                (x: {
-                  id: number;
-                  full_name: string;
-                  role: string;
-                  email: string;
-                  email_verified_at: string;
-                  status: string;
-                  otp_verified_at: idk;
-                  otp: idk;
-                  otp_expires_at: idk;
-                  phone_number: string;
-                  address: string;
-                  google_id: idk;
-                  last_login_at: idk;
-                  created_at: string;
-                  updated_at: string;
-                  avatar_url: string;
-                  profile: {
-                    id: number;
-                    user_id: number;
-                    user_name: string;
-                    total_points: number;
-                    level: number;
-                    used_points: number;
-                    business_name: idk;
-                    category: string;
-                    description: idk;
-                    business_hours: idk;
-                    created_at: string;
-                    updated_at: string;
-                  };
-                }) => (
-                  <TableRow key={x.id}>
-                    <TableCell>{x.id}</TableCell>
-                    <TableCell>{x.full_name}</TableCell>
-                    <TableCell>{x.email}</TableCell>
-                    <TableCell>{dateExtractor(x.created_at)}</TableCell>
-                    <TableCell>
-                      <Badge variant={"success"}>{x.status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DetailsButton x={x} />
-                      <UserBlocker x={x} />
-                    </TableCell>
-                  </TableRow>
-                )
-              )}
+              {users.map((x: idk) => (
+                <TableRow key={x.id}>
+                  <TableCell>{x.id}</TableCell>
+                  <TableCell>{x.full_name}</TableCell>
+                  <TableCell>{x.email}</TableCell>
+                  <TableCell>{dateExtractor(x.created_at)}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        x.status === "Active" ? "success" : "destructive"
+                      }
+                    >
+                      {x.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <DetailsButton x={x} />
+                    <UserBlocker x={x} />
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         )}
       </CardContent>
+
+      <div className="flex-1" />
+
+      <CardFooter className="flex w-full justify-between items-center ">
+        <div className="text-sm text-muted-foreground font-semibold">
+          Page {pagination?.current_page} of {pagination?.last_page}
+        </div>
+
+        <div className="">
+          <Pagination className="w-min">
+            <PaginationContent>
+              {/* Previous Button */}
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={() => page > 1 && setPage(page - 1)}
+                  aria-disabled={page === 1}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+
+              {/* Dynamic Page Numbers */}
+              {pagination?.links?.map((link: idk, idx: number) => {
+                if (
+                  link.label.includes("Previous") ||
+                  link.label.includes("Next")
+                )
+                  return null;
+
+                if (link.label === "...") {
+                  return (
+                    <PaginationItem key={idx}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  );
+                }
+
+                return (
+                  <PaginationItem key={idx}>
+                    <PaginationLink
+                      href="#"
+                      isActive={link.active}
+                      onClick={() => setPage(Number(link.label))}
+                    >
+                      {link.label}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              })}
+
+              {/* Next Button */}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={() =>
+                    page < pagination?.last_page && setPage(page + 1)
+                  }
+                  aria-disabled={page === pagination?.last_page}
+                  className={
+                    page === pagination?.last_page
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

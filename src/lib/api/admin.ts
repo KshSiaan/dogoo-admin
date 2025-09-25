@@ -6,14 +6,22 @@ import { howl, idk } from "../utils";
 
 export const getUsersApi = async ({
   search,
+  page,
   token,
-}: { search?: string; token?: string }) => {
-  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+}: { search?: string; page?: number; token?: string }) => {
+  const params = new URLSearchParams();
+
+  if (search) params.append("search", search);
+  if (page) params.append("page", page.toString());
+
+  const query = params.toString() ? `?${params.toString()}` : "";
+
   return howl(`/admin/get-users${query}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
+
 
 export const viewUserApi = async ({
   user_id,
@@ -70,8 +78,8 @@ export const getActiveChallengesApi = async ({ token }: { token?: string }) => {
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
-export const getCompletedChallengesApi = async ({ token }: { token?: string }) => {
-  return howl("/admin/get-completed-challenges", {
+export const getCompletedChallengesApi = async ({ token,page }: { token?: string,page:idk }) => {
+  return howl(`/admin/get-completed-challenges?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
@@ -293,5 +301,87 @@ export const updatePrivacyApi = async ({
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
     body
+  });
+};
+
+export const getAboutApi = async ({
+  token,
+}: { token?: string }) => {
+  return howl(`/pages/about-us`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const updateAboutApi = async ({
+  token,
+  body
+}: { token?: string ,body:{title:string, content:idk}}) => {
+  return howl(`/pages/about-us`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body
+  });
+};
+
+export const getTncApi = async ({
+  token,
+}: { token?: string }) => {
+  return howl(`/pages/terms-conditions`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const updateTncApi = async ({
+  token,
+  body
+}: { token?: string ,body:{title:string, content:idk}}) => {
+  return howl(`/pages/terms-conditions`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body
+  });
+};
+
+
+// >>>>>>>>>>>>>>>>> DASHBOARD <<<<<<<<<<<<<<<<<<<<
+
+export const getDashboardInfoApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/dashboard-info", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getUserChartApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/user-chart", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getGroupChartApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/group-chart", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getTopChallengeChartApi = async ({
+  filter,
+  token,
+}: { filter: 7 | 15 | 30; token?: string }) => {
+  const query = `?filter=${filter}`;
+  return howl(`/admin/top-challenge-chart${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getRevenueChartApi = async ({ token }: { token?: string }) => {
+  return howl("/admin/revenue-chart", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };

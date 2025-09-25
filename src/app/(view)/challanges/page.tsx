@@ -5,14 +5,6 @@ import { SearchIcon } from "lucide-react";
 import React from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import Active from "./active";
 import ChallangeTypes from "./challange-types";
 import Completed from "./completed";
@@ -42,32 +34,6 @@ export default function Page() {
             <Users />
           </CardContent>
         </Card>
-        <div className="mt-4 text-sm font-medium flex items-center justify-between w-full">
-          <p>Showing 1 to 5 of 112 entries </p>
-          <div className="">
-            <Pagination className="w-fit ">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href="#" />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                    2
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </div>
       </section>
     </main>
   );
