@@ -58,7 +58,7 @@ export default function Plan() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.data.map(
+        {data?.data?.map(
           (x: {
             id: number;
             plan_name: string;

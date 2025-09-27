@@ -3,15 +3,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { SearchIcon } from "lucide-react";
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import All from "./all";
 export default function Page() {
   return (
@@ -38,32 +29,6 @@ export default function Page() {
             <Users />
           </CardContent>
         </Card>
-        <div className="mt-4 text-sm font-medium flex items-center justify-between w-full">
-          <p>Showing 1 to 5 of 112 entries </p>
-          <div className="">
-            <Pagination className="w-fit ">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href="#" />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                    2
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </div>
       </section>
     </main>
   );
@@ -72,16 +37,7 @@ export default function Page() {
 const Users = () => {
   return (
     <>
-      <Tabs defaultValue={"active"} className="mb-6">
-        <TabsList>
-          <TabsTrigger value="active">All</TabsTrigger>
-          <TabsTrigger value="upcoming">Read</TabsTrigger>
-          <TabsTrigger value="completed">Unread</TabsTrigger>
-        </TabsList>
-        <TabsContent value="active">
-          <All />
-        </TabsContent>
-      </Tabs>
+      <All />
     </>
   );
 };

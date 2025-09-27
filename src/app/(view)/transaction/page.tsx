@@ -28,7 +28,7 @@ export default function Page() {
 const Users = () => {
   return (
     <>
-      <div className="w-full flex justify-between items-center">
+      <div className="w-full flex flex-col justify-between items-center">
         <Plan />
       </div>
     </>

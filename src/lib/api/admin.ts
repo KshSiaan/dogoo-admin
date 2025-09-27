@@ -72,8 +72,8 @@ export const blockUnblockUserApi = async ({
 
 // >>>>>>>>>>>>>>>>> CHALLENGE MANAGEMENT <<<<<<<<<<<<<<<<<<<<
 
-export const getActiveChallengesApi = async ({ token }: { token?: string }) => {
-  return howl("/admin/get-active-challenges", {
+export const getActiveChallengesApi = async ({ token,page }: { token?: string,page:string|number }) => {
+  return howl(`/admin/get-active-challenges?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
@@ -176,8 +176,8 @@ export const deleteTypeApi = async ({
 
 // >>>>>>>>>>>>>>>>> REWARDS <<<<<<<<<<<<<<<<<<<<
 
-export const getRewardsApi = async ({ token }: { token?: string }) => {
-  return howl("/admin/get-rewards", {
+export const getRewardsApi = async ({ token ,page}: { token?: string,page:string|number }) => {
+  return howl(`/admin/get-rewards?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
@@ -274,9 +274,9 @@ export const getSubscriptionsApi = async ({
 
 
 export const getTransactionsAdminApi = async ({
-  token,
-}: { token?: string }) => {
-  return howl(`/admin/get-transations`, {
+  token,page
+}: { token?: string ,page?:string|number}) => {
+  return howl(`/admin/get-transations?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
@@ -382,6 +382,29 @@ export const getTopChallengeChartApi = async ({
 export const getRevenueChartApi = async ({ token }: { token?: string }) => {
   return howl("/admin/revenue-chart", {
     method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+
+// >>>>>>>>>>>>>>>>> NOTIFICATION <<<<<<<<<<<<<<<<<<<<
+
+export const getNotifications = async ({ token,page }: {page?:string|number, token?: string }) => {
+  return howl(`/get-notifications?page=${page}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const readNotif = async ({ id,token }: {id:string, token?: string }) => {
+  return howl(`/read?notification_id=${id}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+export const readNotifAll = async ({ token }: {token?: string }) => {
+  return howl(`/read-all`, {
+    method: "PATCH",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };

@@ -34,7 +34,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProfileApi, updateProfileApi } from "@/lib/api/auth";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
@@ -51,11 +51,12 @@ export default function Page() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedImg, setSelectedImg] = useState<string | null>(null); // string URL
   const [{ token }] = useCookies(["token"]);
-
+  const qcl = useQueryClient();
   const { data, isPending } = useQuery({
     queryKey: ["profile"],
     queryFn: (): idk => getProfileApi(token),
   });
+
   const { mutate } = useMutation({
     mutationKey: ["update_profile"],
     mutationFn: (body: FormData) => {
@@ -65,6 +66,7 @@ export default function Page() {
       toast.error(err.message ?? "Failed to complete this request");
     },
     onSuccess: (res: idk) => {
+      qcl.invalidateQueries({ queryKey: ["profile"] });
       toast.success(res.message ?? "Success!");
     },
   });
