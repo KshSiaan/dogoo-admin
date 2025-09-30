@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getNotifications, readNotif } from "@/lib/api/admin";
+import { getNotifications, readNotif, readNotifAll } from "@/lib/api/admin";
 import { useCookies } from "react-cookie";
 import { CardFooter } from "@/components/ui/card";
 import {
@@ -24,6 +24,7 @@ import { cn, idk } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { dateExtractor, timeExtractor } from "@/lib/functions";
+import { Button } from "@/components/ui/button";
 export default function All() {
   const [page, setPage] = useState(1);
   const [{ token }] = useCookies(["token"]);
@@ -57,6 +58,23 @@ export default function All() {
   const pagination = data?.data;
   return (
     <>
+      <div className="flex mb-6 justify-end items-center">
+        <Button
+          onClick={async () => {
+            try {
+              const res: idk = await readNotifAll({ token });
+              refetch();
+              toast.success(
+                res.message ?? "Successfully read all notification"
+              );
+            } catch (error) {
+              toast.error("Something went wrong");
+            }
+          }}
+        >
+          Read all notification
+        </Button>
+      </div>
       <div className="space-y-6">
         {data?.data?.data?.map((x: idk) => (
           <Card

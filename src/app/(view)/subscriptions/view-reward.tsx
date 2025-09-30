@@ -42,19 +42,19 @@ export default function ViewChallange({
             <div className="space-y-1.5">
               <div className="flex space-x-2">
                 <p className="font-semibold">Plan Name:</p>
-                <p className="text-muted-foreground">{data.plan_name}</p>
+                <p className="text-muted-foreground">{data?.plan_name}</p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Duration:</p>
-                <p className="text-muted-foreground">{data.duration}</p>
+                <p className="text-muted-foreground">{data?.duration}</p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Price:</p>
-                <p className="text-muted-foreground">{data.price}</p>
+                <p className="text-muted-foreground">{data?.price}</p>
               </div>
               <div>
                 <p className="font-semibold">Features:</p>
-                <p className="text-muted-foreground">{data.features}</p>
+                <p className="text-muted-foreground">{data?.features}</p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Active Subscribers:</p>

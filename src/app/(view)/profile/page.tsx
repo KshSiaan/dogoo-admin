@@ -42,9 +42,9 @@ import { toast } from "sonner";
 
 // Zod schema
 const formSchema = z.object({
-  fullName: z.string().min(2, "Full name is required"),
-  contactNumber: z.string().min(5, "Contact number is required"),
-  location: z.string().min(2, "Location is required"),
+  fullName: z.string().optional(),
+  contactNumber: z.string().optional(),
+  location: z.string().optional(),
 });
 
 export default function Page() {
@@ -103,10 +103,21 @@ export default function Page() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Form values:", values);
     console.log("Selected file:", selectedFile);
+
     const payload = new FormData();
-    payload.append("full_name", values.fullName);
-    payload.append("phone_number", values.contactNumber);
-    payload.append("address", values.location);
+
+    if (values.fullName) {
+      payload.append("full_name", values.fullName);
+    }
+
+    if (values.contactNumber) {
+      payload.append("phone_number", values.contactNumber);
+    }
+
+    if (values.location) {
+      payload.append("address", values.location);
+    }
+
     if (selectedFile) {
       payload.append("avatar", selectedFile);
     }

@@ -102,11 +102,13 @@ export function SectionCards() {
               Challenge Completion Rate
             </CardDescription>
             <CardTitle className="text-2xl font-semibold">
-              {parseInt(data.data.total_challenge_completed).toFixed(0)}%
+              {data.data.total_challenge_completed
+                ? `${parseInt(data.data.total_challenge_completed).toFixed(0)}%`
+                : "N/A"}
             </CardTitle>
             <CardDescription>
               <span className="text-teal-600">
-                {data.data.challenge_completion_rate}
+                {data.data.challenge_completion_rate ?? "N/A"}
               </span>{" "}
               new challenge completed
             </CardDescription>

@@ -16,7 +16,6 @@ import { getSubscriptionsApi } from "@/lib/api/admin";
 import { useCookies } from "react-cookie";
 import { EditIcon, Loader2Icon } from "lucide-react";
 import { idk } from "@/lib/utils";
-import { features } from "process";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -69,13 +68,13 @@ export default function Plan() {
             created_at: string;
             updated_at: string;
           }) => (
-            <TableRow key={x.id}>
-              <TableCell>{x.id}</TableCell>
-              <TableCell>{x.plan_name}</TableCell>
-              <TableCell>{x.duration}</TableCell>
-              <TableCell>${x.price}</TableCell>
-              <TableCell>{x.features}</TableCell>
-              <TableCell>{x.active_subscribers}</TableCell>
+            <TableRow key={x?.id}>
+              <TableCell>{x?.id}</TableCell>
+              <TableCell>{x?.plan_name}</TableCell>
+              <TableCell>{x?.duration}</TableCell>
+              <TableCell>${x?.price}</TableCell>
+              <TableCell>{x?.features}</TableCell>
+              <TableCell>{x?.active_subscribers}</TableCell>
               {/* <TableCell>
                 <Badge variant={"success"}>Active</Badge>
               </TableCell> */}
@@ -91,10 +90,10 @@ export default function Plan() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>{x.plan_name} plan</DialogTitle>
+                      <DialogTitle>{x?.plan_name} plan</DialogTitle>
                     </DialogHeader>
                     <div className="w-full">
-                      <EditPlan price={x.price} />
+                      <EditPlan price={x?.price} />
                     </div>
                   </DialogContent>
                 </Dialog>

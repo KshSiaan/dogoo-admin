@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -18,6 +19,7 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { ChevronRight, SlidersHorizontalIcon } from "lucide-react";
+
 export function NavMain({
   items,
 }: {
@@ -27,6 +29,8 @@ export function NavMain({
     icon?: LucideIcon | Icon;
   }[];
 }) {
+  const pathname = usePathname();
+
   const settingsChilds = [
     { title: "Personal Profile", to: "/profile" },
     { title: "About Us", to: "/about" },
@@ -38,16 +42,29 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} size="lg" asChild>
-                <Link href={item.url}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {items.map((item) => {
+            const isActive = pathname === item.url;
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  size="lg"
+                  asChild
+                  className={
+                    isActive
+                      ? "bg-foreground/90 text-background rounded-lg font-semibold"
+                      : ""
+                  }
+                >
+                  <Link href={item.url} className="flex items-center gap-2">
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+
           <Collapsible
             asChild
             defaultOpen={false}
@@ -55,23 +72,36 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={"Settings"}>
-                  {<SlidersHorizontalIcon />}
+                <SidebarMenuButton
+                  tooltip={"Settings"}
+                  className="flex items-center gap-2"
+                >
+                  <SlidersHorizontalIcon />
                   <span>Settings</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {settingsChilds.map((x) => (
-                    <SidebarMenuSubItem key={x.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link href={x.to}>
-                          <span>{x.title}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
+                  {settingsChilds.map((x) => {
+                    const isActive = pathname === x.to;
+                    return (
+                      <SidebarMenuSubItem key={x.title}>
+                        <SidebarMenuSubButton
+                          asChild
+                          className={
+                            isActive
+                              ? "bg-foreground! rounded-lg font-semibold"
+                              : ""
+                          }
+                        >
+                          <Link href={x.to} className="block w-full">
+                            <span>{x.title}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
