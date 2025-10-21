@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,7 +18,7 @@ export default function ViewChallange({
     plan_name: string;
     duration: string;
     price: string;
-    features: string;
+    features: string[];
     active_subscribers: number;
     created_at: string;
     updated_at: string;
@@ -54,7 +55,13 @@ export default function ViewChallange({
               </div>
               <div>
                 <p className="font-semibold">Features:</p>
-                <p className="text-muted-foreground">{data?.features}</p>
+                <p className="text-muted-foreground space-x-2 space-y-2">
+                  {data?.features.map((x) => (
+                    <Badge variant={"secondary"} key={x}>
+                      {x}
+                    </Badge>
+                  ))}
+                </p>
               </div>
               <div className="flex space-x-2">
                 <p className="font-semibold">Active Subscribers:</p>

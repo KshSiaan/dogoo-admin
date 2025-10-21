@@ -6,6 +6,15 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Plan from "./plan";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddSub from "./add-sub";
 export default function Page() {
   return (
     <main className="py-6">
@@ -45,6 +54,17 @@ const Users = () => {
             <TabsList>
               <TabsTrigger value="active">Subscription Plan</TabsTrigger>
             </TabsList>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>Add Subscription</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add new Subscription</DialogTitle>
+                </DialogHeader>
+                <AddSub />
+              </DialogContent>
+            </Dialog>
           </div>
           <TabsContent value="active">
             <Plan />

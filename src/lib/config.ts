@@ -9,9 +9,9 @@ const onDev = process.env.NEXT_PUBLIC_APP_ENV === "development";
 // Example usage
 export const apiConfig = {
   baseUrl: `${base_server}/api`,
-  base:base_server,
+  base: base_server,
   isDevelopment: onDev,
-}; 
+};
 
 export const blankImg = (
   x?: number | string,

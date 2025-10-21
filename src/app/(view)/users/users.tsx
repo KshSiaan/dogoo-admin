@@ -87,6 +87,7 @@ export default function Users() {
                 <TableHead>NAME</TableHead>
                 <TableHead>EMAIL</TableHead>
                 <TableHead>JOINED</TableHead>
+                <TableHead>CURRENT PLAN</TableHead>
                 <TableHead>STATUS</TableHead>
                 <TableHead>ACTION</TableHead>
               </TableRow>
@@ -98,6 +99,7 @@ export default function Users() {
                   <TableCell>{x.full_name}</TableCell>
                   <TableCell>{x.email}</TableCell>
                   <TableCell>{dateExtractor(x.created_at)}</TableCell>
+                  <TableCell>{x.subscription_plan_name ?? "-"}</TableCell>
                   <TableCell>
                     <Badge
                       variant={

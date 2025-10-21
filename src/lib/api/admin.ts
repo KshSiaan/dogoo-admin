@@ -268,6 +268,42 @@ export const getSubscriptionsApi = async ({
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
+export const addSubscriptionsApi = async ({
+  body,
+  token,
+}: { body:idk; token?: string }) => {
+  return howl(`/admin/add-subscription`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body
+  });
+};
+
+
+export const updateSubscriptionsApi = async ({
+  id,
+  body,
+  token,
+}: {id:string, body:idk, token?: string }) => {
+  return howl(`/admin/edit-subscription/${id}`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body
+  });
+};
+
+export const deleteSubscriptionsApi = async ({
+  id,
+  token,
+}: {id:string, token?: string }) => {
+  return howl(`/admin/delete-subscription/${id}`, {
+    method: "DELETE",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+
+
 
 
 // >>>>>>>>>>>>>>>>> TRANSACTION <<<<<<<<<<<<<<<<<<<<

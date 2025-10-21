@@ -24,10 +24,9 @@ import {
 } from "@/components/ui/form";
 import { useCookies } from "react-cookie";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addSubscriptionsApi, updateSubscriptionsApi } from "@/lib/api/admin";
+import { addSubscriptionsApi } from "@/lib/api/admin";
 import { toast } from "sonner";
 import { idk } from "@/lib/utils";
-import { useEffect } from "react";
 
 const formSchema = z.object({
   plan_name: z.string().min(1, "Plan name required"),
@@ -43,20 +42,20 @@ const availableFeatures = [
   "Advanced analytics",
   "Premium rewards (earn point 2x)",
 ];
-export default function EditPlan({ data }: { data: idk }) {
+export default function AddSub() {
   const qcl = useQueryClient();
   const [{ token }] = useCookies(["token"]);
 
   const { mutate } = useMutation({
-    mutationKey: ["update_plan"],
+    mutationKey: ["add_plan"],
     mutationFn: (body: idk) => {
-      return updateSubscriptionsApi({ id: data.id, body, token });
+      return addSubscriptionsApi({ body, token });
     },
     onError: (err) => {
       toast.error(err.message ?? "Failed to complete this request");
     },
     onSuccess: (res: idk) => {
-      toast.success(res.message ?? "Successfully updated plan!");
+      toast.success(res.message ?? "Successfully created plan!");
       qcl.invalidateQueries({ queryKey: ["subsc"] });
     },
   });
@@ -71,34 +70,20 @@ export default function EditPlan({ data }: { data: idk }) {
     },
   });
 
-  const onSubmit = (dataset: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
     const payload = {
-      plan_name: dataset.plan_name,
-      duration: dataset.duration,
-      price: dataset.price,
+      plan_name: data.plan_name,
+      duration: data.duration,
+      price: data.price,
       //   ...data?.features?.reduce((acc, feature, index) => {
       //     acc[`features[${index}]`] = feature;
       //     return acc;
       //   }, {} as Record<string, string>),
-      features: dataset.features,
+      features: data.features,
     };
 
-    if (data.id === 1) {
-      mutate({
-        features: dataset.features,
-      });
-    } else {
-      mutate(payload);
-    }
+    mutate(payload);
   };
-  useEffect(() => {
-    if (data) {
-      form.setValue("plan_name", data.plan_name);
-      form.setValue("duration", data.duration);
-      form.setValue("price", data.price);
-      form.setValue("features", data.features || []); // ✅ set default features
-    }
-  }, [data, form]);
 
   return (
     <Form {...form}>
@@ -213,7 +198,7 @@ export default function EditPlan({ data }: { data: idk }) {
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit">Update {data.plan_name} plan</Button>
+          <Button type="submit">Create new plan</Button>
         </DialogFooter>
       </form>
     </Form>
