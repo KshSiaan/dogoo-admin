@@ -21,10 +21,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { idk } from "@/lib/utils";
 
 const chartConfig = {
-  total_transactions: {
-    label: "Transactions",
-    color: "#14b8a6",
-  },
+  // total_transactions: {
+  //   label: "Transactions",
+  //   color: "#14b8a6",
+  // },
   total_amount: {
     label: "Revenue Amount",
     color: "#f87171",
@@ -97,9 +97,9 @@ export default function ChartBC() {
               type="monotone"
               dataKey="total_transactions"
               stroke="#14b8a6"
-              fill="rgba(20, 184, 166, 0.2)"
-              strokeWidth={2}
-              activeDot={{ r: 4 }}
+              fill="rgba(20, 184, 166, 0.0)"
+              strokeWidth={0}
+              activeDot={{ r: 0 }}
             />
             <Area
               type="monotone"
