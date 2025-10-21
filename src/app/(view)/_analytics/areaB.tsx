@@ -39,11 +39,12 @@ export default function ChartBC() {
   });
 
   // transform API data
+  console.log(data?.data);
+
   const chartData =
     data?.data?.map((item: idk) => ({
       month: item.month,
       total_transactions: Number(item.total_transactions),
-      // remove the "k" suffix safely & parse to number
       total_amount: parseFloat((item.total_amount as string).replace(/k$/, "")),
     })) || [];
 

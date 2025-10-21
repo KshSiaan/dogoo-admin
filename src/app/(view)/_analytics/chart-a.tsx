@@ -26,12 +26,10 @@ export default function ChartAC() {
         <div className="w-full h-6 flex items-center justify-center gap-3">
           <div className="h-4 aspect-[6/2] rounded bg-chart-2" />
           <p className="text-xs font-semibold text-muted-foreground mr-6">
-            New User
+            Partner
           </p>
           <div className="h-4 aspect-[6/2] rounded bg-chart-1" />
-          <p className="text-xs font-semibold text-muted-foreground">
-            Active User
-          </p>
+          <p className="text-xs font-semibold text-muted-foreground">User</p>
         </div>
         <ChartA />
       </CardContent>
