@@ -60,10 +60,10 @@ export default function ChartBC() {
 
       <div className="my-6">
         <div className="flex justify-center items-center gap-6 text-sm">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <div className="w-12 h-2 bg-[#14b8a6] rounded"></div>
             <span>Transactions</span>
-          </div>
+          </div> */}
           <div className="flex items-center gap-2">
             <div className="w-12 h-2 bg-[#f87171] rounded"></div>
             <span>Revenue Amount</span>
