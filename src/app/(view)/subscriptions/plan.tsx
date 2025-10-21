@@ -125,32 +125,34 @@ export default function Plan() {
                     </div>
                   </DialogContent>
                 </Dialog>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button size={"icon"} variant={"ghost"}>
-                      <Trash2Icon className="text-destructive" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        You are going to delete "{x?.plan_name}" plan. This
-                        action can not be undone
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          mutate(String(x.id));
-                        }}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                {x.id !== 1 && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size={"icon"} variant={"ghost"}>
+                        <Trash2Icon className="text-destructive" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You are going to delete "{x?.plan_name}" plan. This
+                          action can not be undone
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => {
+                            mutate(String(x.id));
+                          }}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </TableCell>
             </TableRow>
           )
