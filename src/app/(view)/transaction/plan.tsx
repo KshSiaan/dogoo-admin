@@ -51,12 +51,11 @@ export default function Plan() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>TRANSACTION ID</TableHead>
-            <TableHead>USER</TableHead>
+            {/* <TableHead>TRANSACTION ID</TableHead> */}
+            <TableHead>USERNAME</TableHead>
             <TableHead>PLAN NAME</TableHead>
             <TableHead>AMOUNT</TableHead>
             <TableHead>DATE</TableHead>
-            <TableHead>RENEWAL</TableHead>
             <TableHead>STATUS</TableHead>
           </TableRow>
         </TableHeader>
@@ -77,12 +76,11 @@ export default function Plan() {
               updated_at: string;
             }) => (
               <TableRow key={x.id}>
-                <TableCell>{x.id}</TableCell>
+                {/* <TableCell>{x.id}</TableCell> */}
                 <TableCell>{x.user_name}</TableCell>
                 <TableCell>{x.plan_name}</TableCell>
                 <TableCell>${x.amount}</TableCell>
                 <TableCell>{dateExtractor(x.created_at)}</TableCell>
-                <TableCell>{dateExtractor(x.renewal)}</TableCell>
                 <TableCell>
                   <Badge
                     variant={x.status === "Completed" ? "success" : "secondary"}
