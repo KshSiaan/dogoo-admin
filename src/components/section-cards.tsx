@@ -26,11 +26,6 @@ export function SectionCards() {
   }
   return (
     <>
-      {/* <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
-        <code className="whitespace-pre-wrap">
-          {JSON.stringify(data, null, 2)}
-        </code>
-      </pre> */}
       <div className="grid grid-cols-4 gap-6">
         <Card className="flex flex-row justify-start items-start px-4 py-4!">
           <div className="flex items-center h-full">
@@ -81,7 +76,7 @@ export function SectionCards() {
               Total Revenue
             </CardDescription>
             <CardTitle className="text-2xl font-semibold">
-              {parseInt(data.data.total_revenues)}
+              {data.data.total_revenues}
             </CardTitle>
             <CardDescription>
               <span className="text-teal-600">
@@ -106,7 +101,7 @@ export function SectionCards() {
             </CardTitle>
             <CardDescription>
               <span className="text-teal-600">
-                {data.data.challenge_completion_rate ?? "N/A"}
+                {data.data.challenge_completion_rate}
               </span>{" "}
               new challenge completed
             </CardDescription>
