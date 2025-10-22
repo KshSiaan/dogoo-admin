@@ -36,6 +36,7 @@ export function NavMain({
     { title: "About Us", to: "/about" },
     { title: "Data privacy", to: "/privacy" },
     { title: "Terms & Conditions", to: "/tnc" },
+    { title: "Log Out", to: "/logout" },
   ];
 
   return (

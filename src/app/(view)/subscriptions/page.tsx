@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { SearchIcon } from "lucide-react";
-import React from "react";
+import { Loader2Icon, SearchIcon } from "lucide-react";
+import React, { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Plan from "./plan";
@@ -67,7 +67,17 @@ const Users = () => {
             </Dialog>
           </div>
           <TabsContent value="active">
-            <Plan />
+            <Suspense
+              fallback={
+                <div
+                  className={`flex justify-center items-center h-24 mx-auto`}
+                >
+                  <Loader2Icon className={`animate-spin`} />
+                </div>
+              }
+            >
+              <Plan />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>

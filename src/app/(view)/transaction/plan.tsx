@@ -31,7 +31,7 @@ export default function Plan() {
   const [page, setPage] = useState(1);
   const [{ token }] = useCookies(["token"]);
   const { data, isPending } = useQuery({
-    queryKey: ["subsc"],
+    queryKey: ["trans"],
     queryFn: (): idk => {
       return getTransactionsAdminApi({ token, page });
     },
@@ -66,6 +66,7 @@ export default function Plan() {
               id: number;
               payment_intent_id: string;
               card_number: idk;
+              user_name: string;
               user_id: number;
               plan_name: string;
               date: string;
@@ -77,7 +78,7 @@ export default function Plan() {
             }) => (
               <TableRow key={x.id}>
                 <TableCell>{x.id}</TableCell>
-                <TableCell>{x.user_id}</TableCell>
+                <TableCell>{x.user_name}</TableCell>
                 <TableCell>{x.plan_name}</TableCell>
                 <TableCell>${x.amount}</TableCell>
                 <TableCell>{dateExtractor(x.created_at)}</TableCell>
@@ -94,7 +95,6 @@ export default function Plan() {
           )}
         </TableBody>
       </Table>
-
       {pagination && (
         <CardFooter className="flex w-full justify-between items-center mt-12 px-0">
           <div className="text-sm text-muted-foreground font-semibold">
