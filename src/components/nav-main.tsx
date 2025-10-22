@@ -91,7 +91,7 @@ export function NavMain({
                           asChild
                           className={
                             isActive
-                              ? "bg-foreground! rounded-lg font-semibold"
+                              ? "bg-foreground! text-background! rounded-lg font-semibold"
                               : ""
                           }
                         >
