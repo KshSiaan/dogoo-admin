@@ -1,4 +1,6 @@
 "use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -6,47 +8,49 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import React, { useEffect, useState } from "react";
-
 import { Editor } from "primereact/editor";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getTncApi, updateTncApi } from "@/lib/api/admin";
-import { useCookies } from "react-cookie";
-import { idk } from "@/lib/utils";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
+import { getTncApi, updateTncApi } from "@/lib/api/admin";
+import { idk } from "@/lib/utils";
 
 export default function Page() {
   const [{ token }] = useCookies(["token"]);
   const [title, setTitle] = useState<string>("");
-  const [privacy, setPrivacy] = useState<idk>();
+  const [content, setContent] = useState<string>("");
+
+  // ✅ Fetch T&C data
   const { data, isPending } = useQuery({
     queryKey: ["tnc"],
-    queryFn: (): idk => {
-      return getTncApi({ token });
+    queryFn: async (): Promise<idk> => {
+      return await getTncApi({ token });
     },
   });
+
+  // ✅ Mutation to update T&C
   const { mutate, isPending: saving } = useMutation({
     mutationKey: ["update_tnc"],
-    mutationFn: (body: { title: string; content: idk }) => {
-      return updateTncApi({ token, body });
+    mutationFn: async (body: { title: string; content: string }) => {
+      return await updateTncApi({ token, body });
     },
     onError: (err) => {
       toast.error(err.message ?? "Failed to complete this request");
     },
     onSuccess: (res: idk) => {
-      toast.success(res.message ?? "Success!");
+      toast.success(res.message ?? "Updated successfully!");
     },
   });
 
+  // ✅ Populate fields once data is ready
   useEffect(() => {
-    if (!isPending) {
-      setPrivacy(data.data.content);
-      setTitle(data.data.title);
+    if (data?.data) {
+      setTitle(data.data.title ?? "");
+      setContent(data.data.content ?? "");
     }
-  }, [isPending]);
+  }, [data, isPending]);
 
   return (
     <main className="py-6 h-full">
@@ -54,34 +58,27 @@ export default function Page() {
         <CardHeader className="border-b">
           <CardTitle>Terms & Conditions</CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <Input
             placeholder="Title"
             value={title}
-            onChange={(x) => {
-              setTitle(x.target.value);
-            }}
+            onChange={(e) => setTitle(e.target.value)}
           />
+
           <Editor
-            className=""
             style={{ minHeight: "300px" }}
-            value={privacy}
-            onTextChange={(e) => setPrivacy(e.htmlValue)}
+            value={content}
+            onTextChange={(e) => setContent(e.htmlValue || "")}
           />
         </CardContent>
+
         <CardFooter className="flex w-full justify-end">
           <Button
-            disabled={saving}
-            onClick={() => {
-              if (title && privacy) {
-                mutate({
-                  title,
-                  content: privacy,
-                });
-              }
-            }}
+            disabled={saving || !title || !content}
+            onClick={() => mutate({ title, content })}
           >
-            {saving ? "Updating" : "Update"}
+            {saving ? "Updating..." : "Update"}
           </Button>
         </CardFooter>
       </Card>

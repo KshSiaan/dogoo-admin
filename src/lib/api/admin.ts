@@ -1,5 +1,3 @@
-
-
 // >>>>>>>>>>>>> USER <<<<<<<<<<<<<<<
 
 import { howl, idk } from "../utils";
@@ -8,7 +6,11 @@ export const getUsersApi = async ({
   search,
   page,
   token,
-}: { search?: string; page?: number; token?: string }) => {
+}: {
+  search?: string;
+  page?: number;
+  token?: string;
+}) => {
   const params = new URLSearchParams();
 
   if (search) params.append("search", search);
@@ -22,11 +24,13 @@ export const getUsersApi = async ({
   });
 };
 
-
 export const viewUserApi = async ({
   user_id,
   token,
-}: { user_id: string | number; token?: string }) => {
+}: {
+  user_id: string | number;
+  token?: string;
+}) => {
   const query = `?user_id=${encodeURIComponent(user_id)}`;
   return howl(`/admin/view-user${query}`, {
     method: "GET",
@@ -37,7 +41,10 @@ export const viewUserApi = async ({
 export const getBasicInfoApi = async ({
   user_id,
   token,
-}: { user_id: string | number; token?: string }) => {
+}: {
+  user_id: string | number;
+  token?: string;
+}) => {
   const query = `?user_id=${encodeURIComponent(user_id)}`;
   return howl(`/admin/basic-info${query}`, {
     method: "GET",
@@ -49,17 +56,24 @@ export const getTransactionsApi = async ({
   user_id,
   per_page,
   token,
-}: { user_id: string | number; per_page?: number; token?: string }) => {
-  return howl(`/admin/get-transations?user_id=${user_id}&per_page=${per_page}`, {
-    method: "GET",
-    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-  });
+}: {
+  user_id: string | number;
+  per_page?: number;
+  token?: string;
+}) => {
+  return howl(
+    `/admin/get-transations?user_id=${user_id}&per_page=${per_page}`,
+    {
+      method: "GET",
+      ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    }
+  );
 };
 export const blockUnblockUserApi = async ({
   token,
   id,
 }: {
-  id:string;
+  id: string;
   token?: string;
 }) => {
   return howl(`/admin/block-unblock-user?user_id=${id}`, {
@@ -72,13 +86,25 @@ export const blockUnblockUserApi = async ({
 
 // >>>>>>>>>>>>>>>>> CHALLENGE MANAGEMENT <<<<<<<<<<<<<<<<<<<<
 
-export const getActiveChallengesApi = async ({ token,page }: { token?: string,page:string|number }) => {
+export const getActiveChallengesApi = async ({
+  token,
+  page,
+}: {
+  token?: string;
+  page: string | number;
+}) => {
   return howl(`/admin/get-active-challenges?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
-export const getCompletedChallengesApi = async ({ token,page }: { token?: string,page:idk }) => {
+export const getCompletedChallengesApi = async ({
+  token,
+  page,
+}: {
+  token?: string;
+  page: idk;
+}) => {
   return howl(`/admin/get-completed-challenges?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -88,7 +114,10 @@ export const getCompletedChallengesApi = async ({ token,page }: { token?: string
 export const viewActiveChallengeApi = async ({
   challenge_id,
   token,
-}: { challenge_id: string | number; token?: string }) => {
+}: {
+  challenge_id: string | number;
+  token?: string;
+}) => {
   return howl(`/admin/view-active-challenge/${challenge_id}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -98,7 +127,10 @@ export const viewActiveChallengeApi = async ({
 export const viewCompletedChallengeApi = async ({
   challenge_id,
   token,
-}: { challenge_id: string | number; token?: string }) => {
+}: {
+  challenge_id: string | number;
+  token?: string;
+}) => {
   return howl(`/admin/view-completed-challenge/${challenge_id}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -108,7 +140,10 @@ export const viewCompletedChallengeApi = async ({
 export const getTypesApi = async ({
   search,
   token,
-}: { search?: string; token?: string }) => {
+}: {
+  search?: string;
+  token?: string;
+}) => {
   const query = search ? `?search=${encodeURIComponent(search)}` : "";
   return howl(`/admin/get-types${query}`, {
     method: "GET",
@@ -119,7 +154,10 @@ export const getTypesApi = async ({
 export const viewTypeApi = async ({
   type_id,
   token,
-}: { type_id: string | number; token?: string }) => {
+}: {
+  type_id: string | number;
+  token?: string;
+}) => {
   return howl(`/admin/view-type/${type_id}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -166,17 +204,25 @@ export const editTypeApi = async ({
 export const deleteTypeApi = async ({
   type_id,
   token,
-}: { type_id: string | number; token?: string }) => {
+}: {
+  type_id: string | number;
+  token?: string;
+}) => {
   return howl(`/admin/delete-type/${type_id}`, {
     method: "DELETE",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
 
-
 // >>>>>>>>>>>>>>>>> REWARDS <<<<<<<<<<<<<<<<<<<<
 
-export const getRewardsApi = async ({ token ,page}: { token?: string,page:string|number }) => {
+export const getRewardsApi = async ({
+  token,
+  page,
+}: {
+  token?: string;
+  page: string | number;
+}) => {
   return howl(`/admin/get-rewards?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -186,7 +232,10 @@ export const getRewardsApi = async ({ token ,page}: { token?: string,page:string
 export const viewRewardApi = async ({
   reward_id,
   token,
-}: { reward_id: string | number; token?: string }) => {
+}: {
+  reward_id: string | number;
+  token?: string;
+}) => {
   return howl(`/admin/view-reward/${reward_id}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -196,23 +245,34 @@ export const viewRewardApi = async ({
 export const approveRewardApi = async ({
   reward_id,
   token,
-}: { reward_id: string | number; token?: string }) => {
-  return howl(`/admin/approved-reward?reward_id=${encodeURIComponent(reward_id)}`, {
-    method: "PATCH",
-    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-  });
+}: {
+  reward_id: string | number;
+  token?: string;
+}) => {
+  return howl(
+    `/admin/approved-reward?reward_id=${encodeURIComponent(reward_id)}`,
+    {
+      method: "PATCH",
+      ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    }
+  );
 };
 
 export const cancelRewardApi = async ({
   reward_id,
   token,
-}: { reward_id: string | number; token?: string }) => {
-  return howl(`/admin/canceled-reward?reward_id=${encodeURIComponent(reward_id)}`, {
-    method: "PATCH",
-    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-  });
+}: {
+  reward_id: string | number;
+  token?: string;
+}) => {
+  return howl(
+    `/admin/canceled-reward?reward_id=${encodeURIComponent(reward_id)}`,
+    {
+      method: "PATCH",
+      ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    }
+  );
 };
-
 
 // >>>>>>>>>>>>>>>>> PARTNERS <<<<<<<<<<<<<<<<<<<<
 
@@ -221,7 +281,12 @@ export const getPartnersApi = async ({
   per_page,
   page,
   token,
-}: { search?: string; per_page?: number; page?: number; token?: string }) => {
+}: {
+  search?: string;
+  per_page?: number;
+  page?: number;
+  token?: string;
+}) => {
   const query = `?${[
     search ? `search=${encodeURIComponent(search)}` : null,
     per_page ? `per_page=${per_page}` : null,
@@ -238,7 +303,10 @@ export const getPartnersApi = async ({
 export const viewPartnerUserApi = async ({
   user_id,
   token,
-}: { user_id: string | number; token?: string }) => {
+}: {
+  user_id: string | number;
+  token?: string;
+}) => {
   return howl(`/admin/view-user?user_id=${encodeURIComponent(user_id)}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -248,20 +316,28 @@ export const viewPartnerUserApi = async ({
 export const blockUnblockPartnerApi = async ({
   user_id,
   token,
-}: { user_id: string | number; token?: string }) => {
-  return howl(`/admin/block-unblock-user?user_id=${encodeURIComponent(user_id)}`, {
-    method: "PATCH",
-    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-  });
+}: {
+  user_id: string | number;
+  token?: string;
+}) => {
+  return howl(
+    `/admin/block-unblock-user?user_id=${encodeURIComponent(user_id)}`,
+    {
+      method: "PATCH",
+      ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    }
+  );
 };
-
 
 // >>>>>>>>>>>>>>>>> SUBSCRIPTIONS <<<<<<<<<<<<<<<<<<<<
 
 export const getSubscriptionsApi = async ({
   search,
   token,
-}: { search?: string; token?: string }) => {
+}: {
+  search?: string;
+  token?: string;
+}) => {
   const query = search ? `?search=${encodeURIComponent(search)}` : "";
   return howl(`/admin/get-subscriptions${query}`, {
     method: "GET",
@@ -271,47 +347,55 @@ export const getSubscriptionsApi = async ({
 export const addSubscriptionsApi = async ({
   body,
   token,
-}: { body:idk; token?: string }) => {
+}: {
+  body: idk;
+  token?: string;
+}) => {
   return howl(`/admin/add-subscription`, {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-    body
+    body,
   });
 };
-
 
 export const updateSubscriptionsApi = async ({
   id,
   body,
   token,
-}: {id:string, body:idk, token?: string }) => {
+}: {
+  id: string;
+  body: idk;
+  token?: string;
+}) => {
   return howl(`/admin/edit-subscription/${id}`, {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-    body
+    body,
   });
 };
 
 export const deleteSubscriptionsApi = async ({
   id,
   token,
-}: {id:string, token?: string }) => {
+}: {
+  id: string;
+  token?: string;
+}) => {
   return howl(`/admin/delete-subscription/${id}`, {
     method: "DELETE",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
 
-
-
-
-
 // >>>>>>>>>>>>>>>>> TRANSACTION <<<<<<<<<<<<<<<<<<<<
 
-
 export const getTransactionsAdminApi = async ({
-  token,page
-}: { token?: string ,page?:string|number}) => {
+  token,
+  page,
+}: {
+  token?: string;
+  page?: string | number;
+}) => {
   return howl(`/admin/get-transations?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -320,9 +404,7 @@ export const getTransactionsAdminApi = async ({
 
 // >>>>>>>>>>>>>>>>> CONTENTS <<<<<<<<<<<<<<<<<<<<
 
-export const getPrivacyApi = async ({
-  token,
-}: { token?: string }) => {
+export const getPrivacyApi = async ({ token }: { token?: string }) => {
   return howl(`/pages/data-privacy`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -331,18 +413,19 @@ export const getPrivacyApi = async ({
 
 export const updatePrivacyApi = async ({
   token,
-  body
-}: { token?: string ,body:{title:string, content:idk}}) => {
+  body,
+}: {
+  token?: string;
+  body: { title: string; content: idk };
+}) => {
   return howl(`/pages/data-privacy`, {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-    body
+    body,
   });
 };
 
-export const getAboutApi = async ({
-  token,
-}: { token?: string }) => {
+export const getAboutApi = async ({ token }: { token?: string }) => {
   return howl(`/pages/about-us`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -351,18 +434,19 @@ export const getAboutApi = async ({
 
 export const updateAboutApi = async ({
   token,
-  body
-}: { token?: string ,body:{title:string, content:idk}}) => {
+  body,
+}: {
+  token?: string;
+  body: { title: string; content: idk };
+}) => {
   return howl(`/pages/about-us`, {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-    body
+    body,
   });
 };
 
-export const getTncApi = async ({
-  token,
-}: { token?: string }) => {
+export const getTncApi = async ({ token }: { token?: string }) => {
   return howl(`/pages/terms-conditions`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
@@ -371,20 +455,29 @@ export const getTncApi = async ({
 
 export const updateTncApi = async ({
   token,
-  body
-}: { token?: string ,body:{title:string, content:idk}}) => {
+  body,
+}: {
+  token?: string;
+  body: { title: string; content: idk };
+}) => {
   return howl(`/pages/terms-conditions`, {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
-    body
+    body,
   });
 };
-
 
 // >>>>>>>>>>>>>>>>> DASHBOARD <<<<<<<<<<<<<<<<<<<<
 
 export const getDashboardInfoApi = async ({ token }: { token?: string }) => {
   return howl("/admin/dashboard-info", {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const getNotifStatus = async ({ token }: { token?: string }) => {
+  return howl("/notification-status", {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
@@ -407,7 +500,10 @@ export const getGroupChartApi = async ({ token }: { token?: string }) => {
 export const getTopChallengeChartApi = async ({
   filter,
   token,
-}: { filter: 7 | 15 | 30; token?: string }) => {
+}: {
+  filter: 7 | 15 | 30;
+  token?: string;
+}) => {
   const query = `?filter=${filter}`;
   return howl(`/admin/top-challenge-chart${query}`, {
     method: "GET",
@@ -422,23 +518,34 @@ export const getRevenueChartApi = async ({ token }: { token?: string }) => {
   });
 };
 
-
 // >>>>>>>>>>>>>>>>> NOTIFICATION <<<<<<<<<<<<<<<<<<<<
 
-export const getNotifications = async ({ token,page }: {page?:string|number, token?: string }) => {
+export const getNotifications = async ({
+  token,
+  page,
+}: {
+  page?: string | number;
+  token?: string;
+}) => {
   return howl(`/get-notifications?page=${page}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
 
-export const readNotif = async ({ id,token }: {id:string, token?: string }) => {
+export const readNotif = async ({
+  id,
+  token,
+}: {
+  id: string;
+  token?: string;
+}) => {
   return howl(`/read?notification_id=${id}`, {
     method: "PATCH",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
-export const readNotifAll = async ({ token }: {token?: string }) => {
+export const readNotifAll = async ({ token }: { token?: string }) => {
   return howl(`/read-all`, {
     method: "PATCH",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
