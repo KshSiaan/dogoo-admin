@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -98,29 +99,24 @@ export default function ViewChallange({ data }: { data: idk }) {
                 <p className="text-muted-foreground">{data.members_count}</p>
               </div>
               <div className="flex space-x-2">
-                <p className="font-semibold">Max Capacity:</p>
-                <p className="text-muted-foreground">{data.max_count}</p>
+                <p className="font-semibold">Progress:</p>
+                <p className="text-muted-foreground">
+                  {data.completetion_rate ?? "N/A"}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Second Row, Right Column - Info */}
           <div>
-            <h4 className="mb-2 text-base font-semibold">Meta</h4>
+            <h4 className="mb-2 text-base font-semibold">Tasks</h4>
 
             <div className="space-y-1.5">
-              <div className="flex space-x-2">
-                <p className="font-semibold">Created At:</p>
-                <p className="text-muted-foreground">
-                  {formatDate(data.created_at)}
-                </p>
-              </div>
-              <div className="flex space-x-2">
-                <p className="font-semibold">Updated At:</p>
-                <p className="text-muted-foreground">
-                  {formatDate(data.updated_at)}
-                </p>
-              </div>
+              {data?.tasks?.map((x: string) => (
+                <Badge variant={"outline"} key={x}>
+                  {x}
+                </Badge>
+              ))}
             </div>
           </div>
         </div>

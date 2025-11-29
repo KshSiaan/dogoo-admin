@@ -81,12 +81,9 @@ export default function Active() {
                   <TableCell>{x.challenge_type}</TableCell>
                   <TableCell>{dateExtractor(x.start_date)}</TableCell>
                   <TableCell>{dateExtractor(x.end_date)}</TableCell>
-                  <TableCell>
-                    <Badge variant="success">{x.status}</Badge>
-                  </TableCell>
+                  <TableCell>{x.members_count}</TableCell>
                   <TableCell>
                     <ViewChallange data={x} />
-                    {/* <DeleteChallange data={x} /> */}
                   </TableCell>
                 </TableRow>
               )
