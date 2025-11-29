@@ -5,7 +5,7 @@ import { apiConfig, base_server } from "../config";
 
 export const loginApi = async ({
   body,
-}: { body: { email:string,password:string } }) => {
+}: { body: { email: string, password: string } }) => {
   return howl("/login", {
     method: "POST",
     body,
@@ -96,7 +96,7 @@ export const updateProfileApi = async ({
     },
     body,
   });
-  
+
   if (!res.ok) {
     throw new Error(`Failed to update profile: ${res.statusText}`);
   }

@@ -76,7 +76,7 @@ export default function Available() {
             <TableHead>POINT REQUIRED</TableHead>
             <TableHead>STATUS</TableHead>
             <TableHead>EXP. DATE</TableHead>
-            {/* <TableHead>REDEMPTIONS</TableHead> */}
+            <TableHead>ADMIN APPROVAL</TableHead>
             <TableHead>ACTION</TableHead>
           </TableRow>
         </TableHeader>
@@ -109,6 +109,15 @@ export default function Available() {
                 </TableCell>
                 <TableCell>{dateExtractor(x.expiration_date)}</TableCell>
                 <TableCell>
+                  <Badge
+                    variant={
+                      x?.admin_approved === "Accepted" ? "success" : "outline"
+                    }
+                  >
+                    {x?.admin_approved}
+                  </Badge>
+                </TableCell>
+                <TableCell>
                   {x.status === "Enable" && (
                     <Button
                       size={"icon"}
@@ -120,7 +129,6 @@ export default function Available() {
                       <CheckIcon />
                     </Button>
                   )}
-
                   <ViewChallange data={x} />
                   <DeleteChallange data={x} />
                 </TableCell>

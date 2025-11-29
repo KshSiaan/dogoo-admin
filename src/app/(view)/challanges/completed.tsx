@@ -68,6 +68,7 @@ export default function Completed() {
                 duration: string;
                 members_count: number;
                 max_count: number;
+                completetion_rate: number;
               }) => (
                 <TableRow key={x.id}>
                   <TableCell>{x.id}</TableCell>
@@ -75,7 +76,11 @@ export default function Completed() {
                   <TableCell>{x.challenge_type}</TableCell>
                   <TableCell>{x.duration} days</TableCell>
                   <TableCell>
-                    <Progress className="h-3" value={x.max_count} max={100} />
+                    <Progress
+                      className="h-3"
+                      value={x.completetion_rate}
+                      max={x.max_count}
+                    />
                   </TableCell>
                   <TableCell className="text-center">
                     {x.members_count}
