@@ -101,7 +101,7 @@ export function SectionCards() {
             </CardTitle>
             <CardDescription>
               <span className="text-teal-600">
-                {data.data.challenge_completion_rate}
+                {data.data.total_challenge_completed}
               </span>{" "}
               new challenge completed
             </CardDescription>
