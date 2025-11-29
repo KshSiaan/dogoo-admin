@@ -1,4 +1,6 @@
 "use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -6,47 +8,49 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import React, { useEffect, useState } from "react";
-
-import { Editor } from "primereact/editor";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getPrivacyApi, updatePrivacyApi } from "@/lib/api/admin";
-import { useCookies } from "react-cookie";
-import { idk } from "@/lib/utils";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Editor } from "primereact/editor";
+import { toast } from "sonner";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { getPrivacyApi, updatePrivacyApi } from "@/lib/api/admin";
+import { idk } from "@/lib/utils"; // assuming this is a type alias like `any`
 
 export default function Page() {
   const [{ token }] = useCookies(["token"]);
   const [title, setTitle] = useState<string>("");
-  const [privacy, setPrivacy] = useState<idk>();
+  const [privacy, setPrivacy] = useState<string>("");
+
+  // ✅ Fetch existing privacy data
   const { data, isPending } = useQuery({
     queryKey: ["privacy"],
-    queryFn: (): idk => {
-      return getPrivacyApi({ token });
+    queryFn: async (): Promise<idk> => {
+      return await getPrivacyApi({ token });
     },
   });
+
+  // ✅ Update mutation
   const { mutate, isPending: saving } = useMutation({
     mutationKey: ["update_privacy"],
-    mutationFn: (body: { title: string; content: idk }) => {
-      return updatePrivacyApi({ token, body });
+    mutationFn: async (body: { title: string; content: string }) => {
+      return await updatePrivacyApi({ token, body });
     },
     onError: (err) => {
       toast.error(err.message ?? "Failed to complete this request");
     },
     onSuccess: (res: idk) => {
-      toast.success(res.message ?? "Success!");
+      toast.success(res.message ?? "Updated successfully!");
     },
   });
 
+  // ✅ Set form values after data loads
   useEffect(() => {
-    if (!isPending) {
-      setPrivacy(data.data.content);
-      setTitle(data.data.title);
+    if (data?.data) {
+      setPrivacy(data.data.content ?? "");
+      setTitle(data.data.title ?? "");
     }
-  }, [isPending]);
+  }, [data, isPending]);
 
   return (
     <main className="py-6 h-full">
@@ -54,34 +58,29 @@ export default function Page() {
         <CardHeader className="border-b">
           <CardTitle>Data Privacy</CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <Input
             placeholder="Title"
             value={title}
-            onChange={(x) => {
-              setTitle(x.target.value);
-            }}
+            onChange={(e) => setTitle(e.target.value)}
           />
+
           <Editor
-            className=""
             style={{ minHeight: "300px" }}
             value={privacy}
-            onTextChange={(e) => setPrivacy(e.htmlValue)}
+            onTextChange={(e) => setPrivacy(e.htmlValue || "")}
           />
         </CardContent>
+
         <CardFooter className="flex w-full justify-end">
           <Button
-            disabled={saving}
+            disabled={saving || !title || !privacy}
             onClick={() => {
-              if (title && privacy) {
-                mutate({
-                  title,
-                  content: privacy,
-                });
-              }
+              mutate({ title, content: privacy });
             }}
           >
-            {saving ? "Updating" : "Update"}
+            {saving ? "Updating..." : "Update"}
           </Button>
         </CardFooter>
       </Card>

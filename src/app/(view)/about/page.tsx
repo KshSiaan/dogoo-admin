@@ -43,8 +43,8 @@ export default function Page() {
 
   useEffect(() => {
     if (!isPending) {
-      setPrivacy(data.data.content);
-      setTitle(data.data.title);
+      setPrivacy(data?.data?.content ?? "");
+      setTitle(data?.data?.title ?? "");
     }
   }, [isPending]);
 

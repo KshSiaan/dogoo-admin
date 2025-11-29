@@ -20,6 +20,7 @@ import { route } from "@/lib/route";
 
 const data = route;
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

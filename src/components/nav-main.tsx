@@ -19,6 +19,11 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { ChevronRight, SlidersHorizontalIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { idk } from "@/lib/utils";
+import { getNotifStatus } from "@/lib/api/admin";
+import { useCookies } from "react-cookie";
+import { Badge } from "./ui/badge";
 
 export function NavMain({
   items,
@@ -30,7 +35,13 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
-
+  const [{ token }] = useCookies(["token"]);
+  const { data, isPending } = useQuery({
+    queryKey: ["notif_stautus"],
+    queryFn: (): idk => {
+      return getNotifStatus({ token });
+    },
+  });
   const settingsChilds = [
     { title: "Personal Profile", to: "/profile" },
     { title: "About Us", to: "/about" },
@@ -59,7 +70,17 @@ export function NavMain({
                 >
                   <Link href={item.url} className="flex items-center gap-2">
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    <span>
+                      {item.title}{" "}
+                      {item.title === "Notifications" && !isPending && (
+                        <Badge
+                          variant={"destructive"}
+                          className="aspect-square rounded-full"
+                        >
+                          {data.unread_count}
+                        </Badge>
+                      )}
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

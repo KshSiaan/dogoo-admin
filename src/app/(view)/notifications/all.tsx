@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getNotifications, readNotif, readNotifAll } from "@/lib/api/admin";
 import { useCookies } from "react-cookie";
 import { CardFooter } from "@/components/ui/card";
@@ -27,6 +27,7 @@ import { dateExtractor, timeExtractor } from "@/lib/functions";
 import { Button } from "@/components/ui/button";
 export default function All() {
   const [page, setPage] = useState(1);
+  const qcl = useQueryClient();
   const [{ token }] = useCookies(["token"]);
   const { data, refetch, isPending } = useQuery({
     queryKey: ["notifications", page],
@@ -44,6 +45,7 @@ export default function All() {
     },
     onSuccess: (res: idk) => {
       refetch();
+      qcl.invalidateQueries({ queryKey: ["notif_stautus"] });
       toast.success(res.message ?? "Successfully read notification");
     },
   });
@@ -64,6 +66,7 @@ export default function All() {
             try {
               const res: idk = await readNotifAll({ token });
               refetch();
+              qcl.invalidateQueries({ queryKey: ["notif_stautus"] });
               toast.success(
                 res.message ?? "Successfully read all notification"
               );
