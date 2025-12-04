@@ -41,7 +41,7 @@ const formSchema = z.object({
   plan_name: z.string().min(1, "Plan name required"),
   duration: z.string().min(1, "Duration required"),
   price: z.string().min(1, "Price required"),
-  discount: z.string().min(1, "Price required").optional(),
+  discount: z.string().optional(),
   features: z.array(z.string()).optional(),
 });
 
