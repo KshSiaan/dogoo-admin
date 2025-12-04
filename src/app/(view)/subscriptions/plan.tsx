@@ -135,7 +135,7 @@ export default function Plan() {
           <TableHead>DURATION</TableHead>
           <TableHead>PRICE</TableHead>
           <TableHead>DISCOUNT</TableHead>
-          <TableHead>FEATURES</TableHead>
+          {/* <TableHead>FEATURES</TableHead> */}
           <TableHead>ACTIVE SUBSCRIBERS</TableHead>
           <TableHead>ACTION</TableHead>
         </TableRow>
@@ -148,7 +148,7 @@ export default function Plan() {
             <TableCell>{x?.duration ?? "-"}</TableCell>
             <TableCell>${x?.price ?? "0"}</TableCell>
             <TableCell>{x?.discount ?? "0"}%</TableCell>
-            <TableCell className="space-x-2">
+            {/* <TableCell className="space-x-2">
               {Array.isArray(x?.features) && x.features.length > 0 ? (
                 x.features.slice(0, 2).map((f: idk) => (
                   <Badge key={f} variant="secondary">
@@ -158,7 +158,7 @@ export default function Plan() {
               ) : (
                 <Badge variant="outline">No features</Badge>
               )}
-            </TableCell>
+            </TableCell> */}
             <TableCell>{x?.active_subscribers ?? 0}</TableCell>
 
             <TableCell className="flex items-center gap-1">
