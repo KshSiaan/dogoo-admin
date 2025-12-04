@@ -49,7 +49,7 @@ export default function ChallangeTypes() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>CHALLENGE NAME</TableHead>
             <TableHead>REMARK</TableHead>
             <TableHead>ACTION</TableHead>
@@ -72,7 +72,7 @@ export default function ChallangeTypes() {
                 updated_at: string;
               }) => (
                 <TableRow key={x.id}>
-                  <TableCell>{x.id}</TableCell>
+                  {/* <TableCell>{x.id}</TableCell>  */}
                   <TableCell>{x.challenge_type}</TableCell>
                   <TableCell>{x.note}</TableCell>
                   <TableCell>

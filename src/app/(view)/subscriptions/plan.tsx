@@ -130,26 +130,27 @@ export default function Plan() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
+          {/* <TableHead>ID</TableHead> */}
           <TableHead>PLAN NAME</TableHead>
           <TableHead>DURATION</TableHead>
           <TableHead>PRICE</TableHead>
+          <TableHead>DISCOUNT</TableHead>
           <TableHead>FEATURES</TableHead>
           <TableHead>ACTIVE SUBSCRIBERS</TableHead>
           <TableHead>ACTION</TableHead>
         </TableRow>
       </TableHeader>
-
       <TableBody>
         {data?.data?.map((x: idk) => (
           <TableRow key={x?.id ?? Math.random()}>
-            <TableCell>{x?.id ?? "-"}</TableCell>
+            {/* <TableCell>{x?.id ?? "-"}</TableCell> */}
             <TableCell>{x?.plan_name ?? "Unnamed"}</TableCell>
             <TableCell>{x?.duration ?? "-"}</TableCell>
             <TableCell>${x?.price ?? "0"}</TableCell>
+            <TableCell>{x?.discount ?? "0"}%</TableCell>
             <TableCell className="space-x-2">
               {Array.isArray(x?.features) && x.features.length > 0 ? (
-                x.features.map((f: idk) => (
+                x.features.slice(0, 2).map((f: idk) => (
                   <Badge key={f} variant="secondary">
                     {f}
                   </Badge>

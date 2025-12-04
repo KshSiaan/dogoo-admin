@@ -70,7 +70,7 @@ export default function Available() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>REWARD NAME</TableHead>
             <TableHead>TYPE</TableHead>
             <TableHead>POINT REQUIRED</TableHead>
@@ -96,7 +96,7 @@ export default function Available() {
               updated_at: string;
             }) => (
               <TableRow key={x.id}>
-                <TableCell>{x.id}</TableCell>
+                {/* <TableCell>{x.id}</TableCell> */}
                 <TableCell>{x.title}</TableCell>
                 <TableCell>{x.challenge_type}</TableCell>
                 <TableCell>{x.purchase_point}</TableCell>
@@ -117,8 +117,9 @@ export default function Available() {
                     {x?.admin_approved}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  {x.status === "Enable" && (
+                <TableCell className="grid grid-cols-3 gap-2 w-fit">
+                  {String(x.admin_approved).toLocaleLowerCase() ===
+                  "pending" ? (
                     <Button
                       size={"icon"}
                       variant={"ghost"}
@@ -128,9 +129,16 @@ export default function Available() {
                     >
                       <CheckIcon />
                     </Button>
+                  ) : (
+                    <div />
                   )}
                   <ViewChallange data={x} />
-                  <DeleteChallange data={x} />
+                  {String(x.admin_approved).toLocaleLowerCase() ===
+                  "pending" ? (
+                    <DeleteChallange data={x} />
+                  ) : (
+                    <div />
+                  )}
                 </TableCell>
               </TableRow>
             )

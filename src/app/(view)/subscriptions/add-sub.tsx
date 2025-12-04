@@ -27,20 +27,36 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addSubscriptionsApi } from "@/lib/api/admin";
 import { toast } from "sonner";
 import { idk } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { PercentIcon } from "lucide-react";
 
 const formSchema = z.object({
   plan_name: z.string().min(1, "Plan name required"),
   duration: z.string().min(1, "Duration required"),
   price: z.string().min(1, "Price required"),
+  discount: z.string().min(1, "Price required"),
   features: z.array(z.string()).optional(),
 });
 
+const dumFeats = [
+  "Join challenge group & activity",
+  "Only 5 habits added",
+  "Only 5 Say No added",
+  "Earn point 1 per work done",
+];
 const availableFeatures = [
-  "Basic challenges",
-  "Unlimited habits tracking",
-  "Unlimited Say No",
-  "Advanced analytics",
-  "Premium rewards (earn point 2x)",
+  "Creating a challenge group",
+  "Unlimited habits added",
+  "Unlimited Say No added",
+  "Advanced graphical analytics",
+  "Earn point 2x per work done",
+  "Reward redemption by point",
 ];
 export default function AddSub() {
   const qcl = useQueryClient();
@@ -57,6 +73,7 @@ export default function AddSub() {
     onSuccess: (res: idk) => {
       toast.success(res.message ?? "Successfully created plan!");
       qcl.invalidateQueries({ queryKey: ["subsc"] });
+      form.reset();
     },
   });
 
@@ -66,6 +83,7 @@ export default function AddSub() {
       plan_name: "",
       duration: "",
       price: "",
+      discount: "",
       features: [],
     },
   });
@@ -75,10 +93,7 @@ export default function AddSub() {
       plan_name: data.plan_name,
       duration: data.duration,
       price: data.price,
-      //   ...data?.features?.reduce((acc, feature, index) => {
-      //     acc[`features[${index}]`] = feature;
-      //     return acc;
-      //   }, {} as Record<string, string>),
+      discount: data.discount,
       features: data.features,
     };
 
@@ -117,6 +132,24 @@ export default function AddSub() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="discount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Discount</FormLabel>
+              <FormControl>
+                <InputGroup>
+                  <InputGroupInput type="number" {...field} />
+                  <InputGroupAddon align={"inline-end"}>
+                    <PercentIcon />
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Duration */}
         <FormField
@@ -141,14 +174,25 @@ export default function AddSub() {
           )}
         />
 
-        {/* Features */}
+        <Separator />
+        <h4 className="text-sm">Basic Features</h4>
+        <div className="grid grid-cols-2 gap-4">
+          {dumFeats.map((feats) => (
+            <div className="flex items-start gap-2" key={feats}>
+              <Checkbox checked disabled />
+              <Label className="font-normal">{feats}</Label>
+            </div>
+          ))}
+        </div>
+
+        <Separator />
         <FormField
           control={form.control}
           name="features"
           render={() => (
             <FormItem>
-              <FormLabel>Features</FormLabel>
-              <div className="grid grid-cols-2 gap-4">
+              <FormLabel>Additional Features</FormLabel>
+              <div className="grid grid-cols-2 gap-4 pt-4">
                 {availableFeatures.map((feature) => (
                   <FormField
                     key={feature}

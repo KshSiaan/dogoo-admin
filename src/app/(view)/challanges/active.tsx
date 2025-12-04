@@ -43,7 +43,7 @@ export default function Active() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>CHALLENGE NAME</TableHead>
             <TableHead>TYPE</TableHead>
             <TableHead>START DATE</TableHead>
@@ -76,7 +76,7 @@ export default function Active() {
                 max_count: number;
               }) => (
                 <TableRow key={x.id}>
-                  <TableCell>{x.id}</TableCell>
+                  {/* <TableCell>{x.id}</TableCell> */}
                   <TableCell>{x.group_name}</TableCell>
                   <TableCell>{x.challenge_type}</TableCell>
                   <TableCell>{dateExtractor(x.start_date)}</TableCell>

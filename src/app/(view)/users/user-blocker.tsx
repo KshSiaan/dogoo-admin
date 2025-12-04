@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { BanIcon } from "lucide-react";
+import { BanIcon, UserCheckIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,7 +43,7 @@ export default function UserBlocker({ x }: { x: idk }) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant={"ghost"}>
-          <BanIcon />
+          {x.status === "Blocked" ? <UserCheckIcon /> : <BanIcon />}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

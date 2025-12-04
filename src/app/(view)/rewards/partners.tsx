@@ -51,7 +51,7 @@ export default function Partners() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>BUSINESS NAME</TableHead>
             <TableHead>NAME</TableHead>
             <TableHead>EMAIL</TableHead>
@@ -97,7 +97,7 @@ export default function Partners() {
               };
             }) => (
               <TableRow key={x.id}>
-                <TableCell>{x.id}</TableCell>
+                {/* <TableCell>{x.id}</TableCell> */}
                 <TableCell>{x.profile.user_name ?? "N/A"}</TableCell>
                 <TableCell>{x.full_name}</TableCell>
                 <TableCell>{x.email}</TableCell>

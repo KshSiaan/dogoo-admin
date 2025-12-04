@@ -28,20 +28,36 @@ import { addSubscriptionsApi, updateSubscriptionsApi } from "@/lib/api/admin";
 import { toast } from "sonner";
 import { idk } from "@/lib/utils";
 import { useEffect } from "react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { PercentIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   plan_name: z.string().min(1, "Plan name required"),
   duration: z.string().min(1, "Duration required"),
   price: z.string().min(1, "Price required"),
+  discount: z.string().min(1, "Price required"),
   features: z.array(z.string()).optional(),
 });
 
+const dumFeats = [
+  "Join challenge group & activity",
+  "Only 5 habits added",
+  "Only 5 Say No added",
+  "Earn point 1 per work done",
+];
 const availableFeatures = [
-  "Basic challenges",
-  "Unlimited habits tracking",
-  "Unlimited Say No",
-  "Advanced analytics",
-  "Premium rewards (earn point 2x)",
+  "Creating a challenge group",
+  "Unlimited habits added",
+  "Unlimited Say No added",
+  "Advanced graphical analytics",
+  "Earn point 2x per work done",
+  "Reward redemption by point",
 ];
 export default function EditPlan({ data }: { data: idk }) {
   const qcl = useQueryClient();
@@ -67,6 +83,7 @@ export default function EditPlan({ data }: { data: idk }) {
       plan_name: "",
       duration: "",
       price: "",
+      discount: "",
       features: [],
     },
   });
@@ -75,6 +92,7 @@ export default function EditPlan({ data }: { data: idk }) {
     const payload = {
       plan_name: dataset.plan_name,
       duration: dataset.duration,
+      discount: dataset.discount,
       price: dataset.price,
       //   ...data?.features?.reduce((acc, feature, index) => {
       //     acc[`features[${index}]`] = feature;
@@ -96,6 +114,7 @@ export default function EditPlan({ data }: { data: idk }) {
       form.setValue("plan_name", data.plan_name);
       form.setValue("duration", data.duration);
       form.setValue("price", data.price);
+      form.setValue("discount", data.discount);
       form.setValue("features", data.features || []); // ✅ set default features
     }
   }, [data, form]);
@@ -132,7 +151,24 @@ export default function EditPlan({ data }: { data: idk }) {
             </FormItem>
           )}
         />
-
+        <FormField
+          control={form.control}
+          name="discount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Discount</FormLabel>
+              <FormControl>
+                <InputGroup>
+                  <InputGroupInput type="number" {...field} />
+                  <InputGroupAddon align={"inline-end"}>
+                    <PercentIcon />
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* Duration */}
         <FormField
           control={form.control}
@@ -156,14 +192,25 @@ export default function EditPlan({ data }: { data: idk }) {
           )}
         />
 
-        {/* Features */}
+        <Separator />
+        <h4 className="text-sm">Basic Features</h4>
+        <div className="grid grid-cols-2 gap-4">
+          {dumFeats.map((feats) => (
+            <div className="flex items-start gap-2" key={feats}>
+              <Checkbox checked disabled />
+              <Label className="font-normal">{feats}</Label>
+            </div>
+          ))}
+        </div>
+
+        <Separator />
         <FormField
           control={form.control}
           name="features"
           render={() => (
             <FormItem>
-              <FormLabel>Features</FormLabel>
-              <div className="grid grid-cols-2 gap-4">
+              <FormLabel>Additional Features</FormLabel>
+              <div className="grid grid-cols-2 gap-4 pt-4">
                 {availableFeatures.map((feature) => (
                   <FormField
                     key={feature}

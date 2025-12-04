@@ -11,7 +11,7 @@ import {
 import { blockUnblockPartnerApi } from "@/lib/api/admin";
 import { idk } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BanIcon } from "lucide-react";
+import { BanIcon, UserCheckIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
@@ -42,7 +42,11 @@ export default function PartnerBan({ data }: { data: idk }) {
         className="text-destructive"
         onClick={() => setOpen(true)}
       >
-        <BanIcon />
+        {data.status === "Blocked" ? (
+          <UserCheckIcon className="text-green-600" />
+        ) : (
+          <BanIcon />
+        )}
       </Button>
 
       <DialogContent>

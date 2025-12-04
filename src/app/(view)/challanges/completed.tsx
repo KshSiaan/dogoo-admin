@@ -42,7 +42,7 @@ export default function Completed() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>CHALLENGE NAME</TableHead>
             <TableHead>TYPE</TableHead>
             <TableHead>DURATION</TableHead>
@@ -71,7 +71,7 @@ export default function Completed() {
                 completetion_rate: number;
               }) => (
                 <TableRow key={x.id}>
-                  <TableCell>{x.id}</TableCell>
+                  {/* <TableCell>{x.id}</TableCell> */}
                   <TableCell>{x.group_name}</TableCell>
                   <TableCell>{x.challenge_type}</TableCell>
                   <TableCell>{x.duration} days</TableCell>

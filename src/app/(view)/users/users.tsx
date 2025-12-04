@@ -83,7 +83,7 @@ export default function Users() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
+                {/* <TableHead>ID</TableHead> */}
                 <TableHead>NAME</TableHead>
                 <TableHead>EMAIL</TableHead>
                 <TableHead>JOINED</TableHead>
@@ -95,7 +95,7 @@ export default function Users() {
             <TableBody>
               {users.map((x: idk) => (
                 <TableRow key={x.id}>
-                  <TableCell>{x.id}</TableCell>
+                  {/* <TableCell>{x.id}</TableCell> */}
                   <TableCell>{x.full_name}</TableCell>
                   <TableCell>{x.email}</TableCell>
                   <TableCell>{dateExtractor(x.created_at)}</TableCell>
