@@ -114,7 +114,7 @@ export default function EditPlan({ data }: { data: idk }) {
       form.setValue("plan_name", data.plan_name);
       form.setValue("duration", data.duration);
       form.setValue("price", data.price);
-      form.setValue("discount", data.discount);
+      form.setValue("discount", data.discount ?? "0");
       form.setValue("features", data.features || []); // ✅ set default features
     }
   }, [data, form]);
