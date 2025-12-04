@@ -69,18 +69,19 @@ export default function ViewChallange({
               </div>
               <Separator className="my-4" />
               <div>
-                <p className="font-semibold">Basic Features:</p>
+                <p className="font-semibold">Features:</p>
+
                 <p className="text-muted-foreground space-x-2 space-y-2 pt-2">
-                  {dumFeats.map((x) => (
-                    <Badge variant={"secondary"} key={x}>
-                      {x}
-                    </Badge>
-                  ))}
+                  {data?.plan_name !== "Free" &&
+                    dumFeats.map((x) => (
+                      <Badge variant={"secondary"} key={x}>
+                        {x}
+                      </Badge>
+                    ))}
                 </p>
               </div>
               <div>
-                <p className="font-semibold">Additional Features:</p>
-                <p className="text-muted-foreground space-x-2 space-y-2 pt-2">
+                <p className="text-muted-foreground space-x-2 space-y-2">
                   {data?.features.map((x) => (
                     <Badge variant={"secondary"} key={x}>
                       {x}
