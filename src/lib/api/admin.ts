@@ -368,7 +368,7 @@ export const updateSubscriptionsApi = async ({
   token?: string;
 }) => {
   return howl(`/admin/edit-subscription/${id}`, {
-    method: "POST",
+    method: "PATCH",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
     body,
   });
@@ -424,7 +424,7 @@ export const updatePrivacyApi = async ({
     body,
   });
 };
-
+updateSubscriptionsApi
 export const getAboutApi = async ({ token }: { token?: string }) => {
   return howl(`/pages/about-us`, {
     method: "GET",

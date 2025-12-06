@@ -81,7 +81,7 @@ export default function EditPlan({ data }: { data: idk }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       plan_name: "",
-      duration: "",
+      duration: String(data?.duration).toLocaleLowerCase() || "monthly",
       price: "",
       discount: "",
       features: [],
@@ -92,12 +92,8 @@ export default function EditPlan({ data }: { data: idk }) {
     const payload = {
       plan_name: dataset.plan_name,
       duration: dataset.duration,
-      discount: dataset.discount,
+      discount: dataset.discount ?? 0,
       price: dataset.price,
-      //   ...data?.features?.reduce((acc, feature, index) => {
-      //     acc[`features[${index}]`] = feature;
-      //     return acc;
-      //   }, {} as Record<string, string>),
       features: dataset.features,
     };
 
@@ -114,8 +110,8 @@ export default function EditPlan({ data }: { data: idk }) {
       form.setValue("plan_name", data.plan_name);
       form.setValue("duration", data.duration);
       form.setValue("price", data.price);
-      form.setValue("discount", data.discount ?? "0");
-      form.setValue("features", data.features || []); // ✅ set default features
+      form.setValue("discount", String(data.discount).toLowerCase() ?? "0");
+      form.setValue("features", data.features || []); //
     }
   }, [data, form]);
 
@@ -176,7 +172,7 @@ export default function EditPlan({ data }: { data: idk }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Duration</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Duration" />
