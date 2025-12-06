@@ -39,7 +39,7 @@ import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   plan_name: z.string().min(1, "Plan name required"),
-  duration: z.string().min(1, "Duration required"),
+  duration: z.string().optional(),
   price: z.string().min(1, "Price required"),
   discount: z.string().optional(),
   features: z.array(z.string()).optional(),
@@ -89,13 +89,15 @@ export default function EditPlan({ data }: { data: idk }) {
   });
 
   const onSubmit = (dataset: z.infer<typeof formSchema>) => {
-    const payload = {
+    let payload: any = {
       plan_name: dataset.plan_name,
-      duration: dataset.duration,
-      discount: dataset.discount ?? 0,
       price: dataset.price,
+      discount: dataset.discount ?? 0,
       features: dataset.features,
     };
+    if (dataset.plan_name !== "Free") {
+      payload = { ...payload, duration: dataset.duration };
+    }
 
     if (data.id === 1) {
       mutate({
