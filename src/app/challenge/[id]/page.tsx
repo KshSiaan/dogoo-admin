@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,15 +18,39 @@ import { Progress } from "@/components/ui/progress";
 import DownloadContent from "./download-content";
 import { getViewGroupApi } from "@/lib/api/extra";
 
-// Metadata for dynamic pages
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const res = await getViewGroupApi({ id: params.id });
-  const challenge = res.data?.[0];
+interface Member {
+  id: string;
+  user: {
+    avatar_url: string;
+  };
+}
+
+interface Challenge {
+  id: string;
+  group_name: string;
+  challenge_type: string;
+  status: string;
+  my_daily_progress: number;
+  group_daily_progress: number;
+  members_count: number;
+  max_count: number;
+  member_lists: Member[];
+}
+
+// -----------------------------
+// Metadata
+// -----------------------------
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const res = await getViewGroupApi({ id });
+  const challenge = res.data?.[0] as unknown as Challenge | undefined;
 
   if (!challenge) {
-    return {
-      title: "Challenge Not Found",
-    };
+    return { title: "Challenge Not Found" };
   }
 
   return {
@@ -41,15 +66,22 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
       url: `https://dashboard.doogoohabits.com/challenge/${challenge.id}`,
     },
     other: {
-      refresh: `0; url=doogoo://challenge/${challenge.id}`, // app deep link
+      refresh: `0; url=doogoo://challenge/${challenge.id}`,
     },
   };
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+// -----------------------------
+// Page Component
+// -----------------------------
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const res = await getViewGroupApi({ id });
-  const data = res.data;
+  const data = res.data as unknown as Challenge[];
 
   if (!data || data.length === 0) return notFound();
 
@@ -62,7 +94,6 @@ export default async function Page({ params }: { params: { id: string } }) {
         alt="icon"
         draggable={false}
         src="/icon.png"
-        // onContextMenu={(e) => e.preventDefault()}
       />
 
       <section className="w-full lg:w-2/3 mx-auto mt-12">
