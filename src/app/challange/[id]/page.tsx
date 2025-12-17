@@ -54,7 +54,7 @@ export default function Page() {
         onContextMenu={(e) => e.preventDefault()}
       />
 
-      <section className="w-2/3 mx-auto mt-12">
+      <section className="w-full lg:w-2/3 mx-auto mt-12">
         {isPending ? (
           <div className={`flex justify-center items-center h-24 mx-auto`}>
             <Loader2Icon className={`animate-spin`} />
