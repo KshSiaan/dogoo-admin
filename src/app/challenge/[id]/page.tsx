@@ -15,14 +15,12 @@ import { getViewGroupApi } from "@/lib/api/extra";
 import { useQuery } from "@tanstack/react-query";
 import { InboxIcon, Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import DownloadContent from "./download-content";
 import { notFound, useParams } from "next/navigation";
 import {
   Empty,
   EmptyContent,
-  EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
