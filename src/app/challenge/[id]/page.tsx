@@ -57,13 +57,12 @@ export async function generateMetadata({
     title: challenge.group_name,
     openGraph: {
       title: challenge.group_name,
-      description: `${challenge.challenge_type} challenge on DooGoo`,
+      description: `You are invited to join my mini habits group challange`,
       images: [
         {
           url: "/icon.png",
         },
       ],
-      url: `https://dashboard.doogoohabits.com/challenge/${challenge.id}`,
     },
     other: {
       refresh: `0; url=doogoo://challenge/${challenge.id}`,
