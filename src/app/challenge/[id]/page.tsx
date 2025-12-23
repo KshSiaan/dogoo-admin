@@ -60,7 +60,7 @@ export async function generateMetadata({
       description: `${challenge.challenge_type} challenge on DooGoo`,
       images: [
         {
-          url: `https://dashboard.doogoohabits.com/og/challenge-${challenge.id}.png`,
+          url: "/icon.png",
         },
       ],
       url: `https://dashboard.doogoohabits.com/challenge/${challenge.id}`,
