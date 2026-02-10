@@ -28,16 +28,16 @@ export default function SupportPage() {
     e.preventDefault();
 
     const mailtoLink = `mailto:ktpatrick1@gmail.com?subject=${encodeURIComponent(
-      `Dream Compass Support: ${formData.subject}`
+      `Dream Compass Support: ${formData.subject}`,
     )}&body=${encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`,
     )}`;
 
     window.location.href = mailtoLink;
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData((prev) => ({
       ...prev,
