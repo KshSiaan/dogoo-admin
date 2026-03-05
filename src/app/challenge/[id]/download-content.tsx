@@ -12,8 +12,9 @@ export default function DownloadContent() {
         <DrawerTitle></DrawerTitle>
       </DrawerHeader>
       <div className="flex-1 h-full w-full flex justify-center items-center gap-[10dvw]">
-        <button
+        <a
           type="button"
+          href="https://testflight.apple.com/join/6znS3V9v"
           className="flex items-center justify-center w-48 mt-3 text-black bg-transparent border border-black h-14 rounded-xl"
         >
           <div className="mr-3">
@@ -30,10 +31,10 @@ export default function DownloadContent() {
               App Store
             </div>
           </div>
-        </button>
-        <Link
+        </a>
+        <a
           href={
-            "https://drive.google.com/file/d/1YJRpEc5g8ULuLrc_U379XFV5aLBEojsF/view?usp=drive_link"
+            "https://play.google.com/store/apps/details?id=com.andrewdalyhabittracking.doogoo"
           }
           type="button"
           className="flex items-center justify-center w-48 mt-3 text-white bg-black rounded-lg h-14"
@@ -64,7 +65,7 @@ export default function DownloadContent() {
               Google Play
             </div>
           </div>
-        </Link>
+        </a>
       </div>
     </DrawerContent>
   );

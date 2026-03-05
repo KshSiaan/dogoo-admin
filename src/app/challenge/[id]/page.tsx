@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,17 @@ export async function generateMetadata({
   const { id } = await params;
   const res = await getViewGroupApi({ id });
   const challenge = res.data?.[0] as unknown as Challenge | undefined;
+  const headerStore = await headers();
+  const forwardedProto = headerStore.get("x-forwarded-proto");
+  const forwardedHost = headerStore.get("x-forwarded-host");
+  const host = headerStore.get("host");
+  const origin =
+    forwardedProto && forwardedHost
+      ? `${forwardedProto}://${forwardedHost}`
+      : host
+        ? `https://${host}`
+        : "http://localhost:3000";
+  const ogImage = `${origin}/icon.png`;
 
   if (!challenge) {
     return { title: "Challenge Not Found" };
@@ -60,9 +72,15 @@ export async function generateMetadata({
       description: `You are invited to join my mini habits group challange`,
       images: [
         {
-          url: "/icon.png",
+          url: ogImage,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: challenge.group_name,
+      description: `You are invited to join my mini habits group challange`,
+      images: [ogImage],
     },
     other: {
       refresh: `0; url=doogoo://challenge/${challenge.id}`,
