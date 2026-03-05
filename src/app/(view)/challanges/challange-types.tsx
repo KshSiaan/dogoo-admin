@@ -76,13 +76,13 @@ export default function ChallangeTypes() {
                   <TableCell>{x.challenge_type}</TableCell>
                   <TableCell>{x.note}</TableCell>
                   <TableCell>
-                    <Button size={"icon"} variant={"ghost"}>
+                    {/* <Button size={"icon"} variant={"ghost"}>
                       <EditIcon />
-                    </Button>
+                    </Button> */}
                     <DeleteChallange data={x} />
                   </TableCell>
                 </TableRow>
-              )
+              ),
             )
           )}
         </TableBody>
