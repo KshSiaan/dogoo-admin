@@ -404,7 +404,18 @@ export const getTransactionsAdminApi = async ({
 
 // >>>>>>>>>>>>>>>>> CONTENTS <<<<<<<<<<<<<<<<<<<<
 
-export const getPrivacyApi = async ({ token }: { token?: string }) => {
+export const getPrivacyApi = async ({ token }: { token?: string }):Promise<{
+  status: boolean
+  message: string
+  data: {
+    id: number
+    slug: string
+    title: string
+    content: string
+    created_at: string
+    updated_at: string
+  }
+}> => {
   return howl(`/pages/data-privacy`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
