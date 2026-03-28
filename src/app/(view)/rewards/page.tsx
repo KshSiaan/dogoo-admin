@@ -7,6 +7,8 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Available from "./available";
 import Partners from "./partners";
+import GlobalRewards from "./global-rewards";
+import AddReward from "./add-reward";
 export default function Page() {
   return (
     <main className="py-6">
@@ -27,6 +29,7 @@ export default function Page() {
                 placeholder="Search.."
               />
             </div> */}
+            <AddReward />
           </CardHeader>
           <CardContent>
             <Users />
@@ -44,12 +47,16 @@ const Users = () => {
         <TabsList>
           <TabsTrigger value="available">Available Rewards</TabsTrigger>
           <TabsTrigger value="partner">Partner Business</TabsTrigger>
+          <TabsTrigger value="global">Global Rewards</TabsTrigger>
         </TabsList>
         <TabsContent value="available">
           <Available />
         </TabsContent>
         <TabsContent value="partner">
           <Partners />
+        </TabsContent>
+        <TabsContent value="global">
+          <GlobalRewards />
         </TabsContent>
       </Tabs>
     </>

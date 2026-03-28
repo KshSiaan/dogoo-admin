@@ -72,12 +72,12 @@ export default function Available() {
           <TableRow>
             {/* <TableHead>ID</TableHead> */}
             <TableHead>REWARD NAME</TableHead>
-            <TableHead>TYPE</TableHead>
+            <TableHead>CREATOR</TableHead>
             <TableHead>POINT REQUIRED</TableHead>
             <TableHead>STATUS</TableHead>
             <TableHead>EXP. DATE</TableHead>
             <TableHead>ADMIN APPROVAL</TableHead>
-            <TableHead>ACTION</TableHead>
+            <TableHead className="text-center">ACTION</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -91,6 +91,7 @@ export default function Available() {
               expiration_date: string;
               purchase_point: number;
               status: string;
+              reward_creator: string;
               admin_approved: string;
               created_at: string;
               updated_at: string;
@@ -98,7 +99,7 @@ export default function Available() {
               <TableRow key={x.id}>
                 {/* <TableCell>{x.id}</TableCell> */}
                 <TableCell>{x.title}</TableCell>
-                <TableCell>{x.challenge_type}</TableCell>
+                <TableCell>{x.reward_creator}</TableCell>
                 <TableCell>{x.purchase_point}</TableCell>
                 <TableCell>
                   <Badge
@@ -117,7 +118,7 @@ export default function Available() {
                     {x?.admin_approved}
                   </Badge>
                 </TableCell>
-                <TableCell className="grid grid-cols-3 gap-2 w-fit">
+                <TableCell className="text-center">
                   {String(x.admin_approved).toLocaleLowerCase() ===
                   "pending" ? (
                     <Button
@@ -141,7 +142,7 @@ export default function Available() {
                   )}
                 </TableCell>
               </TableRow>
-            )
+            ),
           )}
         </TableBody>
       </Table>

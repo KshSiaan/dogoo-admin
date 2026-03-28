@@ -274,6 +274,125 @@ export const cancelRewardApi = async ({
   );
 };
 
+export const getRadiusApi = async ({ token }: { token?: string }) => {
+  return howl(`/admin/get-radius`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const setRadiusApi = async ({
+  global_reward_radius,
+  token,
+}: {
+  global_reward_radius: number;
+  token?: string;
+}) => {
+  return howl(
+    `/admin/set-radius?global_reward_radius=${encodeURIComponent(
+      global_reward_radius,
+    )}`,
+    {
+      method: "PATCH",
+      ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    },
+  );
+};
+
+export const getGlobalRewardsApi = async ({
+  per_page,
+  page,
+  token,
+}: {
+  per_page?: number;
+  page?: number;
+  token?: string;
+}) => {
+  const query = `?${[
+    per_page ? `per_page=${per_page}` : null,
+    page ? `page=${page}` : null,
+  ]
+    .filter(Boolean)
+    .join("&")}`;
+
+  return howl(`/admin/get-global-rewards${query}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const addGlobalRewardApi = async ({
+  body,
+  token,
+}: {
+  body: {
+    title: string;
+    description: string;
+    expiration_date: string;
+    purchase_point: string;
+    location: string;
+    latitude: string;
+    longitude: string;
+  };
+  token?: string;
+}) => {
+  return howl(`/admin/add-global-reward`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body,
+  });
+};
+
+export const editGlobalRewardApi = async ({
+  id,
+  body,
+  token,
+}: {
+  id: string | number;
+  body: {
+    title: string;
+    description: string;
+    expiration_date: string;
+    purchase_point: string;
+    location: string;
+    latitude: string;
+    longitude: string;
+  };
+  token?: string;
+}) => {
+  return howl(`/admin/edit-global-reward/${id}?_method=PATCH`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body,
+  });
+};
+
+export const deleteGlobalRewardApi = async ({
+  id,
+  token,
+}: {
+  id: string | number;
+  token?: string;
+}) => {
+  return howl(`/admin/delete-global-reward/${id}`, {
+    method: "DELETE",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const toggleGlobalRewardStatusApi = async ({
+  id,
+  token,
+}: {
+  id: string | number;
+  token?: string;
+}) => {
+  return howl(`/admin/enable-disable-global-reward/${id}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
 // >>>>>>>>>>>>>>>>> PARTNERS <<<<<<<<<<<<<<<<<<<<
 
 export const getPartnersApi = async ({
