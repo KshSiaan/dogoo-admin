@@ -506,6 +506,30 @@ export const deleteSubscriptionsApi = async ({
   });
 };
 
+export const getPlansApi = async ({
+  token,
+}: {
+  token?: string;
+}) => {
+  return howl(`/admin/get-plans`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const refundPlanApi = async ({
+  storeTransactionId,
+  token,
+}: {
+  storeTransactionId: string;
+  token?: string;
+}) => {
+  return howl(`/admin/refund?storeTransactionId=${encodeURIComponent(storeTransactionId)}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
 // >>>>>>>>>>>>>>>>> TRANSACTION <<<<<<<<<<<<<<<<<<<<
 
 export const getTransactionsAdminApi = async ({
