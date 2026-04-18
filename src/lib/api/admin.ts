@@ -547,7 +547,7 @@ export const getTransactionsAdminApi = async ({
 
 // >>>>>>>>>>>>>>>>> CONTENTS <<<<<<<<<<<<<<<<<<<<
 
-export const getPrivacyApi = async ({ token }: { token?: string }):Promise<{
+export const getPrivacyApi = async ({ token }: { token?: string }): Promise<{
   status: boolean
   message: string
   data: {

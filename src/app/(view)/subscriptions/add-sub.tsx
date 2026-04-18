@@ -45,18 +45,18 @@ const formSchema = z.object({
 });
 
 const dumFeats = [
-  "Join challenge group & activity",
-  "Only 5 habits added",
-  "Only 5 Say No added",
-  "Earn point 1 per work done",
+  "Join group challenges",
+  "Add Only 5 habits",
+  "Add Only 5 Say-No",
+  "Earn 1 point for each habit completed",
 ];
 const availableFeatures = [
-  "Creating a challenge group",
-  "Unlimited habits added",
-  "Unlimited Say No added",
-  "Advanced graphical analytics",
-  "Earn point 2x per work done",
-  "Reward redemption by point",
+  "Create and join group challenges",
+  "Add Unlimited habits",
+  "Add Unlimited Say-No",
+  "Advance Graphics Analytics",
+  "Earn 2 points for each habit completed",
+  "Redeem Rewards using points",
 ];
 export default function AddSub() {
   const qcl = useQueryClient();
