@@ -33,7 +33,17 @@ import LocationPicker, {
   type LocationData,
 } from "@/components/core/location-picker";
 import { useCookies } from "react-cookie";
-
+import {
+  FileUpload,
+  FileUploadDropzone,
+  FileUploadTrigger,
+  FileUploadList,
+  FileUploadItem,
+  FileUploadItemPreview,
+  FileUploadItemMetadata,
+  FileUploadItemDelete,
+} from "@/components/ui/file-upload";
+import { UploadIcon, XIcon } from "lucide-react";
 const latLngRegex = /^-?\d+(\.\d+)?$/;
 
 const addRewardSchema = z.object({
@@ -57,6 +67,7 @@ const addRewardSchema = z.object({
     .regex(latLngRegex, "Longitude must be numeric"),
 });
 
+
 type AddRewardFormValues = z.infer<typeof addRewardSchema>;
 
 export default function AddReward() {
@@ -76,6 +87,35 @@ export default function AddReward() {
       longitude: "",
     },
   });
+    const [files, setFiles] = React.useState<File[]>([]);
+  const onFileValidate = React.useCallback(
+    (file: File): string | null => {
+      // Validate max files
+      if (files.length >= 1) {
+        return "You can only upload up to 1 file";
+      }
+
+      // Validate file type (only images)
+      if (!file.type.startsWith("image/")) {
+        return "Only image files are allowed";
+      }
+
+      // Validate file size (max 2MB)
+      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+      if (file.size > MAX_SIZE) {
+        return `File size must be less than ${MAX_SIZE / (1024 * 1024)}MB`;
+      }
+
+      return null;
+    },
+    [files],
+  );
+
+  const onFileReject = React.useCallback((file: File, message: string) => {
+    toast(message, {
+      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
+    });
+  }, []);
 
   const handleLocationSelect = (locationData: LocationData) => {
     form.setValue("location", locationData.address ?? "", {
@@ -91,15 +131,7 @@ export default function AddReward() {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["add_global_reward"],
-    mutationFn: (body: {
-      title: string;
-      description: string;
-      expiration_date: string;
-      purchase_point: string;
-      location: string;
-      latitude: string;
-      longitude: string;
-    }) => {
+    mutationFn: (body: FormData) => {
       return addGlobalRewardApi({ body, token });
     },
     onError: (err) => {
@@ -119,6 +151,7 @@ export default function AddReward() {
     const formattedDate = `${day}/${month}/${year}`;
 
     const payload = {
+      image: files[0] || null, // Assuming you want to send the first file or null if no file is uploaded
       title: values.title,
       description: values.description,
       expiration_date: formattedDate,
@@ -128,7 +161,21 @@ export default function AddReward() {
       longitude: values.longitude,
     };
 
-    mutate(payload);
+    // turn payload into form data
+    const formData = new FormData();
+    formData.append("title", payload.title);
+    formData.append("description", payload.description);
+    formData.append("expiration_date", payload.expiration_date);
+    formData.append("purchase_point", payload.purchase_point);
+    formData.append("location", payload.location);
+    formData.append("latitude", payload.latitude);
+    formData.append("longitude", payload.longitude);
+
+    if (payload.image) {
+      formData.append("image", payload.image);
+    }
+
+    mutate(formData);
   };
 
   const currentLat = Number(form.watch("latitude"));
@@ -151,6 +198,50 @@ export default function AddReward() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+           <FileUpload
+                value={files}
+                onValueChange={setFiles}
+                onFileValidate={onFileValidate}
+                onFileReject={onFileReject}
+                accept="image/*"
+                maxFiles={1}
+                maxSize={2 * 1024 * 1024} // 2MB
+                className="w-full "
+                multiple={false}
+              >
+                <FileUploadDropzone>
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="flex items-center justify-center rounded-full border p-2.5">
+                      <UploadIcon className="size-6 text-muted-foreground" />
+                    </div>
+                    <p className="font-medium text-sm">
+                      Drag & drop files here
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Or click to browse (max 1 file, only images, max size 2MB)
+                    </p>
+                  </div>
+                  <FileUploadTrigger asChild>
+                    <Button variant="outline" size="sm" className="mt-2 w-fit">
+                      Browse files
+                    </Button>
+                  </FileUploadTrigger>
+                </FileUploadDropzone>
+                <FileUploadTrigger />
+                <FileUploadList>
+                  {files.map((file) => (
+                    <FileUploadItem key={file.name} value={file}>
+                      <FileUploadItemPreview />
+                      <FileUploadItemMetadata />
+                      <FileUploadItemDelete asChild>
+                        <Button variant="ghost" size="icon" className="size-7">
+                          <XIcon />
+                        </Button>
+                      </FileUploadItemDelete>
+                    </FileUploadItem>
+                  ))}
+                </FileUploadList>
+              </FileUpload>
             <FormField
               control={form.control}
               name="title"

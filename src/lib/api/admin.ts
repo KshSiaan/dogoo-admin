@@ -325,23 +325,20 @@ export const addGlobalRewardApi = async ({
   body,
   token,
 }: {
-  body: {
-    title: string;
-    description: string;
-    expiration_date: string;
-    purchase_point: string;
-    location: string;
-    latitude: string;
-    longitude: string;
-  };
+  body: FormData;
   token?: string;
 }) => {
-  return howl(`/admin/add-global-reward`, {
+  const res = await fetch("/admin/add-global-reward", {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
     body,
   });
-};
+
+  const data = await res.json();
+  return data;
+
+
+}
 
 export const editGlobalRewardApi = async ({
   id,
