@@ -1,5 +1,6 @@
 // >>>>>>>>>>>>> USER <<<<<<<<<<<<<<<
 
+import { apiConfig, base_server } from "../config";
 import { howl, idk } from "../utils";
 
 export const getUsersApi = async ({
@@ -328,7 +329,7 @@ export const addGlobalRewardApi = async ({
   body: FormData;
   token?: string;
 }) => {
-  const res = await fetch("/admin/add-global-reward", {
+  const res = await fetch(`${apiConfig.baseUrl}/admin/add-global-reward`, {
     method: "POST",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
     body,
