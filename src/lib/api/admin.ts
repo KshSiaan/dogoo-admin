@@ -528,6 +528,68 @@ export const refundPlanApi = async ({
   });
 };
 
+export const getFreeSubscriptionsApi = async ({ token }: { token?: string }) => {
+  return howl(`/admin/get-free-subscriptions`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const addFreeSubscriptionApi = async ({
+  body,
+  token,
+}: {
+  body: { user_id: string; subscription_id: string };
+  token?: string;
+}) => {
+  return howl(`/admin/add-free-subscription`, {
+    method: "POST",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+    body,
+  });
+};
+
+export const viewFreeSubscriptionApi = async ({
+  id,
+  token,
+}: {
+  id: string | number;
+  token?: string;
+}) => {
+  return howl(`/admin/view-free-subscription/${id}`, {
+    method: "GET",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const removeFreeSubscriptionApi = async ({
+  id,
+  token,
+}: {
+  id: string | number;
+  token?: string;
+}) => {
+  return howl(`/admin/remove-free-subscription/${id}`, {
+    method: "DELETE",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
+export const renewFreeSubscriptionApi = async ({
+  id,
+  duration,
+  token,
+}: {
+  id: string | number;
+  duration: "Monthly" | "Yearly";
+  token?: string;
+}) => {
+  return howl(`/admin/renew-free-subscription/${id}?duration=${duration}`, {
+    method: "PATCH",
+    ...(token && { headers: { Authorization: `Bearer ${token}` } }),
+  });
+};
+
 // >>>>>>>>>>>>>>>>> TRANSACTION <<<<<<<<<<<<<<<<<<<<
 
 export const getTransactionsAdminApi = async ({
@@ -697,6 +759,7 @@ export const readNotif = async ({
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
 };
+
 export const readNotifAll = async ({ token }: { token?: string }) => {
   return howl(`/read-all`, {
     method: "PATCH",

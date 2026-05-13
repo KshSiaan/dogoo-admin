@@ -1,0 +1,492 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getFreeSubscriptionsApi,
+  addFreeSubscriptionApi,
+  viewFreeSubscriptionApi,
+  removeFreeSubscriptionApi,
+  renewFreeSubscriptionApi,
+  getSubscriptionsApi,
+  getUsersApi,
+} from "@/lib/api/admin";
+import { useCookies } from "react-cookie";
+import { Eye, Loader2Icon, RefreshCwIcon, Trash2Icon } from "lucide-react";
+import { idk } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+
+interface FreeSubData {
+  id: number;
+  user_id: number;
+  plan_name: string;
+  duration: string;
+  price: string;
+  currency: string;
+  features: string[];
+  renewal: string;
+  status: string;
+  store: any;
+  storeTransactionId: any;
+  created_at: string;
+  updated_at: string;
+  isRenew: boolean;
+}
+
+function ViewFreeSubDialog({ id, token }: { id: number; token?: string }) {
+  const [open, setOpen] = useState(false);
+
+  const { data, isPending } = useQuery<idk>({
+    queryKey: ["view_free_sub", id],
+    enabled: open && !!token,
+    queryFn: () => viewFreeSubscriptionApi({ id, token }),
+  });
+
+  const sub = (data as idk)?.data;
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" title="View details">
+          <Eye className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Free Subscription Details</DialogTitle>
+        </DialogHeader>
+        {isPending ? (
+          <div className="flex justify-center items-center h-24">
+            <Loader2Icon className="animate-spin" />
+          </div>
+        ) : sub ? (
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">ID</label>
+                <p className="text-sm font-semibold">{sub.id}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">User ID</label>
+                <p className="text-sm font-semibold">{sub.user_id}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Plan Name</label>
+                <p className="text-sm font-semibold">{sub.plan_name}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Duration</label>
+                <p className="text-sm font-semibold">{sub.duration}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Price</label>
+                <p className="text-sm font-semibold">${sub.price}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Currency</label>
+                <p className="text-sm font-semibold">{sub.currency ?? "-"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Status</label>
+                <p className="text-sm font-semibold">{sub.status}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Renewal</label>
+                <p className="text-sm font-semibold">{sub.renewal}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Store</label>
+                <p className="text-sm font-semibold">{sub.store ?? "-"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Transaction ID</label>
+                <p className="text-sm font-semibold">{sub.storeTransactionId ?? "-"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Created At</label>
+                <p className="text-sm font-semibold">{sub.created_at}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Updated At</label>
+                <p className="text-sm font-semibold">{sub.updated_at}</p>
+              </div>
+            </div>
+            {Array.isArray(sub.features) && sub.features.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Features</label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {sub.features.map((f: string) => (
+                    <Badge key={f} variant="secondary">{f}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">No data found.</p>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RenewDialog({
+  id,
+  token,
+  onSuccess,
+}: {
+  id: number;
+  token?: string;
+  onSuccess: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [duration, setDuration] = useState<"Monthly" | "Yearly">("Monthly");
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["renew_free_sub", id],
+    mutationFn: () => renewFreeSubscriptionApi({ id, duration, token }),
+    onError: (err: any) => toast.error(err?.message ?? "Failed to renew"),
+    onSuccess: (res: idk) => {
+      toast.success(res?.message ?? "Renewed successfully!");
+      setOpen(false);
+      onSuccess();
+    },
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" title="Renew subscription">
+          <RefreshCwIcon className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Renew Free Subscription</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Duration</Label>
+            <Select
+              value={duration}
+              onValueChange={(v) => setDuration(v as "Monthly" | "Yearly")}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Monthly">Monthly</SelectItem>
+                <SelectItem value="Yearly">Yearly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline" type="button">Cancel</Button>
+          </DialogClose>
+          <Button onClick={() => mutate()} disabled={isPending}>
+            {isPending ? <Loader2Icon className="animate-spin h-4 w-4" /> : "Renew"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function AddFreeSubDialog({
+  token,
+  onSuccess,
+}: {
+  token?: string;
+  onSuccess: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [subscriptionId, setSubscriptionId] = useState("");
+
+  const { data: usersData } = useQuery<idk>({
+    queryKey: ["users_for_free_sub"],
+    enabled: open && !!token,
+    queryFn: () => getUsersApi({ token }),
+  });
+
+  const { data: subsData } = useQuery<idk>({
+    queryKey: ["subs_for_free_sub"],
+    enabled: open && !!token,
+    queryFn: () => getSubscriptionsApi({ token }),
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["add_free_sub"],
+    mutationFn: () =>
+      addFreeSubscriptionApi({
+        body: { user_id: userId, subscription_id: subscriptionId },
+        token,
+      }),
+    onError: (err: any) => toast.error(err?.message ?? "Failed to add free subscription"),
+    onSuccess: (res: idk) => {
+      toast.success(res?.message ?? "Free subscription added!");
+      setOpen(false);
+      setUserId("");
+      setSubscriptionId("");
+      onSuccess();
+    },
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Add Free Subscription</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Free Subscription</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>User</Label>
+            <Select value={userId} onValueChange={setUserId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select user" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.isArray((usersData as idk)?.data?.data) &&
+                  (usersData as idk).data.data.map((u: idk) => (
+                    <SelectItem key={u.id} value={String(u.id)}>
+                      {u.full_name ?? u.email ?? `User #${u.id}`}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Subscription Plan</Label>
+            <Select value={subscriptionId} onValueChange={setSubscriptionId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select plan" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.isArray(subsData?.data) &&
+                  subsData.data.map((s: idk) => (
+                    <SelectItem key={s.id} value={String(s.id)}>
+                      {s.plan_name ?? `Plan #${s.id}`} — {s.duration}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline" type="button">Cancel</Button>
+          </DialogClose>
+          <Button
+            onClick={() => mutate()}
+            disabled={isPending || !userId || !subscriptionId}
+          >
+            {isPending ? <Loader2Icon className="animate-spin h-4 w-4" /> : "Add"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default function Free() {
+  const qcl = useQueryClient();
+  const [{ token }] = useCookies(["token"]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const { data, isPending, isError, error, refetch } = useQuery({
+    queryKey: ["free_subscriptions"],
+    enabled: !!token && isClient,
+    queryFn: async (): Promise<idk> => {
+      try {
+        const res: idk = await getFreeSubscriptionsApi({ token });
+        if (!res || !Array.isArray(res?.data)) throw new Error("Invalid response");
+        return res;
+      } catch (err: any) {
+        throw new Error(err?.message || "Failed to load free subscriptions");
+      }
+    },
+    retry: 1,
+    staleTime: 1000 * 60,
+  });
+
+  const { mutate: deleteMutate, isPending: isDeleting } = useMutation({
+    mutationKey: ["delete_free_sub"],
+    mutationFn: async (id: number) => {
+      if (!token) throw new Error("Unauthorized request");
+      return removeFreeSubscriptionApi({ id, token });
+    },
+    onError: (err: any) => toast.error(err?.message ?? "Failed to remove"),
+    onSuccess: async (res: idk) => {
+      toast.success(res?.message ?? "Removed successfully!");
+      await qcl.invalidateQueries({ queryKey: ["free_subscriptions"] });
+      refetch();
+    },
+  });
+
+  if (!isClient) {
+    return (
+      <div className="flex justify-center items-center h-24">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+
+  if (isPending) {
+    return (
+      <div className="flex justify-center items-center h-24 mx-auto">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="border-destructive/50">
+        <CardHeader>
+          <CardTitle className="text-destructive">
+            {error?.message || "Something went wrong"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => refetch()} variant="outline">Retry</Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <AddFreeSubDialog
+          token={token}
+          onSuccess={() => {
+            qcl.invalidateQueries({ queryKey: ["free_subscriptions"] });
+            refetch();
+          }}
+        />
+      </div>
+
+      {!data?.data?.length ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>No free subscriptions found</CardTitle>
+          </CardHeader>
+        </Card>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>USER ID</TableHead>
+              <TableHead>PLAN NAME</TableHead>
+              <TableHead>DURATION</TableHead>
+              <TableHead>PRICE</TableHead>
+              <TableHead>STATUS</TableHead>
+              <TableHead>RENEWAL</TableHead>
+              <TableHead>ACTION</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data?.data?.map((sub: FreeSubData) => (
+              <TableRow key={sub?.id ?? Math.random()}>
+                <TableCell>{sub?.user_id ?? "-"}</TableCell>
+                <TableCell>{sub?.plan_name ?? "Unnamed"}</TableCell>
+                <TableCell>{sub?.duration ?? "-"}</TableCell>
+                <TableCell>${sub?.price ?? "0"}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{sub?.status ?? "-"}</Badge>
+                </TableCell>
+                <TableCell>{sub?.renewal ?? "-"}</TableCell>
+                <TableCell className="flex items-center gap-1">
+                  <ViewFreeSubDialog id={sub.id} token={token} />
+
+                  <RenewDialog
+                    id={sub.id}
+                    token={token}
+                    onSuccess={() => {
+                      qcl.invalidateQueries({ queryKey: ["free_subscriptions"] });
+                      refetch();
+                    }}
+                  />
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="icon" variant="ghost" disabled={isDeleting}>
+                        {isDeleting ? (
+                          <Loader2Icon className="animate-spin text-destructive" />
+                        ) : (
+                          <Trash2Icon className="text-destructive" />
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Remove free subscription for "{sub?.plan_name}" (User #{sub?.user_id}). This can't be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deleteMutate(sub.id)}>
+                          Remove
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </div>
+  );
+}

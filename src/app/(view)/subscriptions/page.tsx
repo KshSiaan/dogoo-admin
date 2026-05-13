@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddSub from "./add-sub";
+import Free from "./free";
 export default function Page() {
   return (
     <main className="py-6">
@@ -55,6 +56,7 @@ const Users = () => {
             <TabsList>
               <TabsTrigger value="active">Subscription Plan</TabsTrigger>
               <TabsTrigger value="refund">Refund</TabsTrigger>
+              <TabsTrigger value="free">Free Subscription</TabsTrigger>
             </TabsList>
             <Dialog>
               <DialogTrigger asChild>
@@ -92,6 +94,19 @@ const Users = () => {
               }
             >
               <Refund />
+            </Suspense>
+          </TabsContent>
+          <TabsContent value="free">
+            <Suspense
+              fallback={
+                <div
+                  className={`flex justify-center items-center h-24 mx-auto`}
+                >
+                  <Loader2Icon className={`animate-spin`} />
+                </div>
+              }
+            >
+              <Free />
             </Suspense>
           </TabsContent>
         </Tabs>
