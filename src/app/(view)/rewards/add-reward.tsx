@@ -323,7 +323,7 @@ export default function AddReward() {
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Input placeholder="Tangalil" {...field} />
+                    <Input placeholder="Tangalil" {...field} disabled/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
