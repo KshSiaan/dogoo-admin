@@ -58,7 +58,11 @@ const Users = () => {
               <TabsTrigger value="refund">Refund</TabsTrigger>
               <TabsTrigger value="free">Free Subscription</TabsTrigger>
             </TabsList>
-            <Dialog>
+
+          </div>
+          <TabsContent value="active">
+                       <div className="flex justify-end">
+                         <Dialog>
               <DialogTrigger asChild>
                 <Button>Add Subscription</Button>
               </DialogTrigger>
@@ -69,8 +73,7 @@ const Users = () => {
                 <AddSub />
               </DialogContent>
             </Dialog>
-          </div>
-          <TabsContent value="active">
+                       </div>
             <Suspense
               fallback={
                 <div

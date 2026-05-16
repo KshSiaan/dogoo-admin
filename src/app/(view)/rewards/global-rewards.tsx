@@ -95,8 +95,10 @@ export default function GlobalRewards() {
 
   return (
     <div className="w-full">
+
       <div className="flex justify-end items-center gap-4 mb-4">
-        <Input
+        
+          <Input
           type="number"
           min={0}
           className="max-w-[300px]"
@@ -125,6 +127,7 @@ export default function GlobalRewards() {
         >
           {saving || isRadiusPending ? "Setting..." : "Set Radius"}
         </Button>
+              <AddReward />
       </div>
       <p className="mt-3 text-sm text-muted-foreground text-right">
         Current radius: {radiusData?.data?.global_reward_radius ?? "N/A"}{" "}

@@ -21,7 +21,7 @@ import {
   getUsersApi,
 } from "@/lib/api/admin";
 import { useCookies } from "react-cookie";
-import { Eye, Loader2Icon, RefreshCwIcon, Trash2Icon } from "lucide-react";
+import { Eye, Loader2Icon, RefreshCwIcon, SearchIcon, Trash2Icon } from "lucide-react";
 import { idk } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -233,6 +233,94 @@ function RenewDialog({
   );
 }
 
+function UserSearchCombobox({
+  token,
+  dialogOpen,
+  onChange,
+}: {
+  token?: string;
+  dialogOpen: boolean;
+  onChange: (id: string, label: string) => void;
+}) {
+  const [search, setSearch] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState("");
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const { data: usersData, isFetching } = useQuery<idk>({
+    queryKey: ["users_search_combobox", search],
+    enabled: dialogOpen && !!token,
+    queryFn: () => getUsersApi({ token, search }),
+  });
+
+  const users: idk[] = Array.isArray((usersData as idk)?.data?.data)
+    ? (usersData as idk).data.data
+    : [];
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function handleSelect(u: idk) {
+    const label = `${u.full_name ?? u.email ?? `User #${u.id}`}${u.email ? ` (${u.email})` : ""}`;
+    setSelectedLabel(label);
+    setSearch(label);
+    setDropdownOpen(false);
+    onChange(String(u.id), label);
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <div className="flex items-center border rounded-md px-3 h-9 gap-2">
+        <SearchIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+        <input
+          className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          placeholder="Search user by name or email..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setDropdownOpen(true);
+            if (e.target.value !== selectedLabel) {
+              onChange("", "");
+              setSelectedLabel("");
+            }
+          }}
+          onFocus={() => setDropdownOpen(true)}
+        />
+        {isFetching && <Loader2Icon className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />}
+      </div>
+      {dropdownOpen && (
+        <div className="absolute z-50 w-full mt-1 rounded-md border bg-popover shadow-md max-h-52 overflow-y-auto">
+          {users.length === 0 ? (
+            <p className="text-sm text-muted-foreground px-3 py-2">No users found.</p>
+          ) : (
+            users.map((u: idk) => (
+              <button
+                key={u.id}
+                type="button"
+                className="w-full text-left text-sm px-3 py-2 hover:bg-accent hover:text-accent-foreground"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => handleSelect(u)}
+              >
+                {u.full_name ?? `User #${u.id}`}
+                {u.email && (
+                  <span className="text-muted-foreground ml-1 text-xs">({u.email})</span>
+                )}
+              </button>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AddFreeSubDialog({
   token,
   onSuccess,
@@ -243,12 +331,6 @@ function AddFreeSubDialog({
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
   const [subscriptionId, setSubscriptionId] = useState("");
-
-  const { data: usersData } = useQuery<idk>({
-    queryKey: ["users_for_free_sub"],
-    enabled: open && !!token,
-    queryFn: () => getUsersApi({ token }),
-  });
 
   const { data: subsData } = useQuery<idk>({
     queryKey: ["subs_for_free_sub"],
@@ -285,19 +367,11 @@ function AddFreeSubDialog({
         <div className="space-y-4">
           <div className="space-y-2">
             <Label>User</Label>
-            <Select value={userId} onValueChange={setUserId}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select user" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.isArray((usersData as idk)?.data?.data) &&
-                  (usersData as idk).data.data.map((u: idk) => (
-                    <SelectItem key={u.id} value={String(u.id)}>
-                      {u.full_name ?? u.email ?? `User #${u.id}`}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+            <UserSearchCombobox
+              token={token}
+              dialogOpen={open}
+              onChange={(id) => setUserId(id)}
+            />
           </div>
           <div className="space-y-2">
             <Label>Subscription Plan</Label>

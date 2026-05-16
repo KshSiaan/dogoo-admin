@@ -29,7 +29,7 @@ export default function Page() {
                 placeholder="Search.."
               />
             </div> */}
-            <AddReward />
+
           </CardHeader>
           <CardContent>
             <Users />
