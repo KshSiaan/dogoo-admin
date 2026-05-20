@@ -506,10 +506,13 @@ export const deleteSubscriptionsApi = async ({
 
 export const getPlansApi = async ({
   token,
+  search,
 }: {
   token?: string;
+  search?: string;
 }) => {
-  return howl(`/admin/get-plans`, {
+  const params = search ? `?search=${encodeURIComponent(search)}` : "";
+  return howl(`/admin/get-plans${params}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
@@ -528,8 +531,9 @@ export const refundPlanApi = async ({
   });
 };
 
-export const getFreeSubscriptionsApi = async ({ token }: { token?: string }) => {
-  return howl(`/admin/get-free-subscriptions`, {
+export const getFreeSubscriptionsApi = async ({ token, search }: { token?: string; search?: string }) => {
+  const params = search ? `?search=${encodeURIComponent(search)}` : "";
+  return howl(`/admin/get-free-subscriptions${params}`, {
     method: "GET",
     ...(token && { headers: { Authorization: `Bearer ${token}` } }),
   });
