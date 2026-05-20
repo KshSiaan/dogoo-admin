@@ -2,333 +2,410 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPlansApi, refundPlanApi } from "@/lib/api/admin";
 import { useCookies } from "react-cookie";
-import { Eye, Loader2Icon } from "lucide-react";
-import { idk } from "@/lib/utils";
+import { Eye, Loader2Icon, SearchIcon } from "lucide-react";
+import { cn, idk } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 interface PlanData extends idk {
-  id: number;
-  user_id: number;
-  plan_name: string;
-  duration: string;
-  price: string;
-  features: string[];
-  renewal: string;
-  status: string;
-  store: string;
-  storeTransactionId: string;
-  created_at: string;
-  updated_at: string;
-  isRefund: boolean;
+	id: number;
+	user_id: number;
+	plan_name: string;
+	duration: string;
+	price: string;
+	features: string[];
+	renewal: string;
+	status: string;
+	store: string;
+	storeTransactionId: string;
+	created_at: string;
+	updated_at: string;
+	isRefund: boolean;
+	user: {
+		id: number;
+		full_name: string;
+		role: string;
+		email: string;
+		phone_number: any;
+		address: any;
+		status: string;
+		avatar_url: string;
+	};
 }
 
 export default function Refund() {
-  const qcl = useQueryClient();
-  const [{ token }] = useCookies(["token"]);
-  const [isClient, setIsClient] = useState(false);
+	const qcl = useQueryClient();
+	const [{ token }] = useCookies(["token"]);
+	const [isClient, setIsClient] = useState(false);
+	const [searchInput, setSearchInput] = useState("");
+	const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
-  const { data, isPending, isError, error, refetch } = useQuery({
-    queryKey: ["get_plans"],
-    enabled: !!token && isClient,
-    queryFn: async (): Promise<idk> => {
-      try {
-        const res: idk = await getPlansApi({ token });
-        if (!res || !Array.isArray(res?.data))
-          throw new Error("Invalid response");
-        return res;
-      } catch (err: any) {
-        throw new Error(err?.message || "Failed to load plans");
-      }
-    },
-    retry: 1,
-    staleTime: 1000 * 60,
-  });
+	useEffect(() => {
+		const timer = setTimeout(() => setSearch(searchInput), 400);
+		return () => clearTimeout(timer);
+	}, [searchInput]);
 
-  const { mutate: refundMutate, isPending: isRefunding } = useMutation({
-    mutationKey: ["refund_plan"],
-    mutationFn: async (storeTransactionId: string) => {
-      if (!token) throw new Error("Unauthorized request");
-      return await refundPlanApi({ storeTransactionId, token });
-    },
-    onError: (err: any) => {
-      const errorMsg = err?.message ?? "Failed to complete refund";
-      toast.error(errorMsg);
-    },
-    onSuccess: async (res: idk) => {
-      toast.success(res?.message ?? "Refund processed successfully!");
-      await qcl.invalidateQueries({ queryKey: ["get_plans"] });
-      refetch();
-    },
-  });
+	const { data, isPending, isError, error, refetch } = useQuery({
+		queryKey: ["get_plans", search],
+		enabled: !!token && isClient,
+		queryFn: async (): Promise<idk> => {
+			try {
+				const res: idk = await getPlansApi({
+					token,
+					search: search || undefined,
+				});
+				if (!res || !Array.isArray(res?.data))
+					throw new Error("Invalid response");
+				return res;
+			} catch (err: any) {
+				throw new Error(err?.message || "Failed to load plans");
+			}
+		},
+		retry: 1,
+		staleTime: 0,
+	});
 
-  if (!isClient) {
-    return (
-      <div className="flex justify-center items-center h-24">
-        <Loader2Icon className="animate-spin" />
-      </div>
-    );
-  }
+	const { mutate: refundMutate, isPending: isRefunding } = useMutation({
+		mutationKey: ["refund_plan"],
+		mutationFn: async (storeTransactionId: string) => {
+			if (!token) throw new Error("Unauthorized request");
+			return await refundPlanApi({ storeTransactionId, token });
+		},
+		onError: (err: any) => {
+			const errorMsg = err?.message ?? "Failed to complete refund";
+			toast.error(errorMsg);
+		},
+		onSuccess: async (res: idk) => {
+			toast.success(res?.message ?? "Refund processed successfully!");
+			await qcl.invalidateQueries({ queryKey: ["get_plans"] });
+			refetch();
+		},
+	});
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-24 mx-auto">
-        <Loader2Icon className="animate-spin" />
-      </div>
-    );
-  }
+	const searchBar = (
+		<div className="w-full flex justify-end items-center mb-4">
+			<div
+				className={cn(
+					"file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-fit min-w-[25dvw] rounded-md border bg-transparent px-3 items-center text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+					"focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+					"aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+				)}
+			>
+				<SearchIcon className="text-muted-foreground" />
+				<Input
+					className="outline-none! border-none! ring-0! shadow-none! py-0"
+					placeholder="Search by Transaction ID"
+					value={searchInput}
+					onChange={(e) => setSearchInput(e.target.value)}
+				/>
+			</div>
+		</div>
+	);
 
-  if (isError) {
-    return (
-      <Card className="border-destructive/50">
-        <CardHeader>
-          <CardTitle className="text-destructive">
-            {error?.message || "Something went wrong"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={() => refetch()} variant="outline">
-            Retry
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+	if (!isClient || isPending) {
+		return (
+			<>
+				{searchBar}
+				<div className="flex justify-center items-center h-24 mx-auto">
+					<Loader2Icon className="animate-spin" />
+				</div>
+			</>
+		);
+	}
 
-  if (!data?.data?.length) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>No plans found</CardTitle>
-        </CardHeader>
-      </Card>
-    );
-  }
+	if (isError) {
+		return (
+			<>
+				{searchBar}
+				<Card className="border-destructive/50">
+					<CardHeader>
+						<CardTitle className="text-destructive">
+							{error?.message || "Something went wrong"}
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Button onClick={() => refetch()} variant="outline">
+							Retry
+						</Button>
+					</CardContent>
+				</Card>
+			</>
+		);
+	}
 
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>PLAN NAME</TableHead>
-          <TableHead>DURATION</TableHead>
-          <TableHead>PRICE</TableHead>
-          <TableHead>STATUS</TableHead>
-          <TableHead>RENEWAL</TableHead>
-          <TableHead>STORE</TableHead>
-          <TableHead>ACTION</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data?.data?.map((plan: PlanData) => (
-          <TableRow key={plan?.id ?? Math.random()}>
-            <TableCell>{plan?.plan_name ?? "Unnamed"}</TableCell>
-            <TableCell>{plan?.duration ?? "-"}</TableCell>
-            <TableCell>${plan?.price ?? "0"}</TableCell>
-            <TableCell>
-              <Badge
-                variant={plan?.status === "Paid" ? "default" : "secondary"}
-              >
-                {plan?.status ?? "-"}
-              </Badge>
-            </TableCell>
-            <TableCell>{plan?.renewal ?? "-"}</TableCell>
-            <TableCell>{plan?.store ?? "-"}</TableCell>
+	if (!data?.data?.length) {
+		return (
+			<>
+				{searchBar}
+				<Card>
+					<CardHeader>
+						<CardTitle>No plans found</CardTitle>
+					</CardHeader>
+				</Card>
+			</>
+		);
+	}
 
-            <TableCell className="flex items-center gap-4">
-              {/* View Details Button */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" title="View details">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>{plan?.plan_name} - Details</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          ID
-                        </label>
-                        <p className="text-sm font-semibold">{plan?.id}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          User ID
-                        </label>
-                        <p className="text-sm font-semibold">{plan?.user_id}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Plan Name
-                        </label>
-                        <p className="text-sm font-semibold">
-                          {plan?.plan_name}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Duration
-                        </label>
-                        <p className="text-sm font-semibold">
-                          {plan?.duration}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Price
-                        </label>
-                        <p className="text-sm font-semibold">${plan?.price}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Status
-                        </label>
-                        <p className="text-sm font-semibold">{plan?.status}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Renewal
-                        </label>
-                        <p className="text-sm font-semibold">{plan?.renewal}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Store
-                        </label>
-                        <p className="text-sm font-semibold">{plan?.store}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Store Transaction ID
-                        </label>
-                        <p className="text-sm font-semibold">
-                          {plan?.storeTransactionId}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Is Refund
-                        </label>
-                        <Badge
-                          variant={plan?.isRefund ? "destructive" : "secondary"}
-                        >
-                          {plan?.isRefund ? "Yes" : "No"}
-                        </Badge>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Created At
-                        </label>
-                        <p className="text-sm font-semibold">
-                          {plan?.created_at}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Updated At
-                        </label>
-                        <p className="text-sm font-semibold">
-                          {plan?.updated_at}
-                        </p>
-                      </div>
-                    </div>
-                    {Array.isArray(plan?.features) &&
-                      plan.features.length > 0 && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">
-                            Features
-                          </label>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {plan.features.map((feature: string) => (
-                              <Badge key={feature} variant="secondary">
-                                {feature}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                </DialogContent>
-              </Dialog>
+	return (
+		<>
+			<div className="w-full flex justify-end items-center mb-4">
+				<div
+					className={cn(
+						"file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-fit min-w-[25dvw] rounded-md border bg-transparent px-3 items-center text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+						"focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+						"aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+					)}
+				>
+					<SearchIcon className="text-muted-foreground" />
+					<Input
+						className="outline-none! border-none! ring-0! shadow-none! py-0"
+						placeholder="Search by Transaction ID"
+						value={searchInput}
+						onChange={(e) => setSearchInput(e.target.value)}
+					/>
+				</div>
+			</div>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>USER NAME</TableHead>
+						<TableHead>EMAIL</TableHead>
+						<TableHead>PLAN NAME</TableHead>
+						<TableHead>DURATION</TableHead>
+						<TableHead>PRICE</TableHead>
+						<TableHead>STATUS</TableHead>
+						<TableHead>RENEWAL</TableHead>
+						<TableHead>STORE</TableHead>
+						<TableHead>ACTION</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{data?.data?.map((plan: PlanData) => (
+						<TableRow key={plan?.id ?? Math.random()}>
+							<TableCell>{plan?.user?.full_name ?? "Unnamed"}</TableCell>
+							<TableCell>{plan?.user?.email ?? "-"}</TableCell>
+							<TableCell>{plan?.plan_name ?? "Unnamed"}</TableCell>
+							<TableCell>{plan?.duration ?? "-"}</TableCell>
+							<TableCell>${plan?.price ?? "0"}</TableCell>
+							<TableCell>
+								<Badge
+									variant={plan?.status === "Paid" ? "default" : "secondary"}
+								>
+									{plan?.status ?? "-"}
+								</Badge>
+							</TableCell>
+							<TableCell>{plan?.renewal ?? "-"}</TableCell>
+							<TableCell>{plan?.store ?? "-"}</TableCell>
 
-              {/* Refund Button */}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    disabled={plan?.isRefund || isRefunding}
-                    title={
-                      plan?.isRefund ? "Already refunded" : "Process refund"
-                    }
-                    className={plan?.isRefund ? "opacity-50" : ""}
-                  >
-                    {isRefunding ? (
-                      <Loader2Icon className="animate-spin h-4 w-4" />
-                    ) : (
-                      <span className="text-sm font-semibold">Refund</span>
-                    )}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Process Refund?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You're about to process a refund for "{plan?.plan_name}"
-                      (${plan?.price}). This action can't be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() =>
-                        refundMutate(plan?.storeTransactionId ?? "")
-                      }
-                    >
-                      Confirm Refund
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
+							<TableCell className="flex items-center gap-4">
+								{/* View Details Button */}
+								<Dialog>
+									<DialogTrigger asChild>
+										<Button variant="ghost" size="icon" title="View details">
+											<Eye className="h-4 w-4" />
+										</Button>
+									</DialogTrigger>
+									<DialogContent className="max-w-2xl">
+										<DialogHeader>
+											<DialogTitle>{plan?.plan_name} - Details</DialogTitle>
+										</DialogHeader>
+										<div className="space-y-4 max-h-96 overflow-y-auto">
+											<div className="grid grid-cols-2 gap-4">
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														USER NAME
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.user?.full_name ?? "Unnamed"}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														USER EMAIL
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.user?.email ?? "-"}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Plan Name
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.plan_name}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Duration
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.duration}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Price
+													</label>
+													<p className="text-sm font-semibold">
+														${plan?.price}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Status
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.status}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Renewal
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.renewal}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Store
+													</label>
+													<p className="text-sm font-semibold">{plan?.store}</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Store Transaction ID
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.storeTransactionId}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Is Refund
+													</label>
+													<Badge
+														variant={
+															plan?.isRefund ? "destructive" : "secondary"
+														}
+													>
+														{plan?.isRefund ? "Yes" : "No"}
+													</Badge>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Created At
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.created_at}
+													</p>
+												</div>
+												<div>
+													<label className="text-sm font-medium text-muted-foreground">
+														Updated At
+													</label>
+													<p className="text-sm font-semibold">
+														{plan?.updated_at}
+													</p>
+												</div>
+											</div>
+											{Array.isArray(plan?.features) &&
+												plan.features.length > 0 && (
+													<div>
+														<label className="text-sm font-medium text-muted-foreground">
+															Features
+														</label>
+														<div className="flex flex-wrap gap-2 mt-2">
+															{plan.features.map((feature: string) => (
+																<Badge key={feature} variant="secondary">
+																	{feature}
+																</Badge>
+															))}
+														</div>
+													</div>
+												)}
+										</div>
+									</DialogContent>
+								</Dialog>
+
+								{/* Refund Button */}
+								<AlertDialog>
+									<AlertDialogTrigger asChild>
+										<Button
+											disabled={plan?.isRefund || isRefunding}
+											title={
+												plan?.isRefund ? "Already refunded" : "Process refund"
+											}
+											className={plan?.isRefund ? "opacity-50" : ""}
+										>
+											{isRefunding ? (
+												<Loader2Icon className="animate-spin h-4 w-4" />
+											) : (
+												<span className="text-sm font-semibold">Refund</span>
+											)}
+										</Button>
+									</AlertDialogTrigger>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>Process Refund?</AlertDialogTitle>
+											<AlertDialogDescription>
+												You're about to process a refund for "{plan?.plan_name}"
+												(${plan?.price}). This action can't be undone.
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>Cancel</AlertDialogCancel>
+											<AlertDialogAction
+												onClick={() =>
+													refundMutate(plan?.storeTransactionId ?? "")
+												}
+											>
+												Confirm Refund
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
+							</TableCell>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</>
+	);
 }
