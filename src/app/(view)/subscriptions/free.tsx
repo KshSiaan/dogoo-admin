@@ -447,11 +447,13 @@ function AddFreeSubDialog({
 							</SelectTrigger>
 							<SelectContent>
 								{Array.isArray(subsData?.data) &&
-									subsData.data.map((s: idk) => (
-										<SelectItem key={s.id} value={String(s.id)}>
-											{s.plan_name ?? `Plan #${s.id}`} — {s.duration}
-										</SelectItem>
-									))}
+									subsData.data
+										.filter((s: idk) => s.plan_name?.toLowerCase() !== "free")
+										.map((s: idk) => (
+											<SelectItem key={s.id} value={String(s.id)}>
+												{s.plan_name ?? `Plan #${s.id}`} — {s.duration}
+											</SelectItem>
+										))}
 							</SelectContent>
 						</Select>
 					</div>

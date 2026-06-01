@@ -35,6 +35,7 @@ import { cn, idk } from "@/lib/utils";
 import { getUsersApi } from "@/lib/api/admin";
 import { dateExtractor } from "@/lib/functions";
 import DetailsButton from "./details-button";
+import UserSubscriptionButton from "./subscription-button";
 import UserBlocker from "./user-blocker";
 
 export default function Users() {
@@ -111,6 +112,7 @@ export default function Users() {
                   </TableCell>
                   <TableCell>
                     <DetailsButton x={x} />
+                    <UserSubscriptionButton user={x} />
                     <UserBlocker x={x} />
                   </TableCell>
                 </TableRow>
