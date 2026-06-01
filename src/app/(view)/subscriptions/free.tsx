@@ -336,7 +336,7 @@ function UserSearchCombobox({
 
 	return (
 		<div ref={containerRef} className="relative">
-			{/* <div className="flex items-center border rounded-md px-3 h-9 gap-2">
+			<div className="flex items-center border rounded-md px-3 h-9 gap-2">
 				<SearchIcon className="h-4 w-4 text-muted-foreground shrink-0" />
 				<input
 					className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
@@ -355,7 +355,7 @@ function UserSearchCombobox({
 				{isFetching && (
 					<Loader2Icon className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
 				)}
-			</div> */}
+			</div>
 			{dropdownOpen && (
 				<div className="absolute z-50 w-full mt-1 rounded-md border bg-popover shadow-md max-h-52 overflow-y-auto">
 					{users.length === 0 ? (
@@ -563,8 +563,8 @@ export default function Free() {
 
 	return (
 		<div className="space-y-4">
-			{/* <div className="flex justify-between items-center gap-4">
-				<div className="flex items-center border rounded-md px-3 h-9 gap-2 w-72">
+			<div className="flex justify-between items-center gap-4">
+				{/* <div className="flex items-center border rounded-md px-3 h-9 gap-2 w-72">
 					<SearchIcon className="h-4 w-4 text-muted-foreground shrink-0" />
 					<input
 						className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
@@ -572,7 +572,8 @@ export default function Free() {
 						value={searchInput}
 						onChange={(e) => setSearchInput(e.target.value)}
 					/>
-				</div>
+				</div> */}
+				<div className=""></div>
 				<AddFreeSubDialog
 					token={token}
 					onSuccess={() => {
@@ -580,7 +581,7 @@ export default function Free() {
 						refetch();
 					}}
 				/>
-			</div> */}
+			</div>
 
 			{!data?.data?.length ? (
 				<Card>
