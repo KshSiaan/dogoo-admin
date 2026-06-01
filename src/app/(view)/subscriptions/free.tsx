@@ -620,16 +620,18 @@ export default function Free() {
 								<TableCell className="flex items-center gap-1">
 									<ViewFreeSubDialog id={sub.id} token={token} />
 
-									<RenewDialog
-										id={sub.id}
-										token={token}
-										onSuccess={() => {
-											qcl.invalidateQueries({
-												queryKey: ["free_subscriptions"],
-											});
-											refetch();
-										}}
-									/>
+									{sub.isRenew && (
+										<RenewDialog
+											id={sub.id}
+											token={token}
+											onSuccess={() => {
+												qcl.invalidateQueries({
+													queryKey: ["free_subscriptions"],
+												});
+												refetch();
+											}}
+										/>
+									)}
 
 									<AlertDialog>
 										<AlertDialogTrigger asChild>
