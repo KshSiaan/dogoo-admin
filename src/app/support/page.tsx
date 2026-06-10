@@ -41,7 +41,7 @@ export default function SupportPage() {
 			body.append("message", formData.message);
 
 			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_SERVER}/send-support-message`,
+				`${process.env.NEXT_PUBLIC_SERVER}/api/send-support-message`,
 				{ method: "POST", body },
 			);
 			const data = await res.json();
